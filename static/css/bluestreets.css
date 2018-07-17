@@ -1,0 +1,15 @@
+.accordion_header_button {
+  background-color: #555555;
+  float: right;
+  padding: 0 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 8px;
+}
+
+.checkbox_label {
+  color: white;
+}

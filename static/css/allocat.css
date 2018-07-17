@@ -1,0 +1,25 @@
+.webix_view {
+    font-size:13px;
+}
+
+.webix_header>div {
+    font-size:16px;
+}
+
+.webix_layout_toolbar .webix_el_button,.webix_layout_toolbar .webix_el_label,.webix_layout_toolbar .webix_inp_label{background-color:teal;color:#fff}
+
+.webix_layout_space,.webix_layout_wide {
+    background-color: darkslategray;
+}
+
+.panel_layout {
+    background-color: lightslategray;
+}
+
+.popup_header {
+  background-color: teal;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  width: 100%;
+}
