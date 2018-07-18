@@ -12,12 +12,12 @@ var jurisdictionList = {
   height: 400,
   select: true,
   //data: jurisdictions,
-  template: "#name#",
-  on: {
-    onItemDblClick: function() {
-      jurisdictionListCtlr.handleSelection(this.getSelectedItem().code);
-    }
-  }
+  template: "#name#"
+  //on: {
+  //  onItemDblClick: function() {
+  //    jurisdictionListCtlr.handleSelection(this.getSelectedItem().code);
+  //  }
+  //}
 };
 
 /*=====================================================================
@@ -29,7 +29,8 @@ var jurisdictionListCtlr = {
 
   init: function(selectFunction) {
     this.list = $$("jurisdictionList");
-    this.selectFunction = selectFunction;
+    //this.selectFunction = selectFunction;
+    this.load();
   },
 
   clear: function() {
@@ -51,15 +52,15 @@ var jurisdictionListCtlr = {
     this.list.showItem(id);
   },
 
-  handleSelection: function(code) {
-    if (typeof houseNumsListCtlr !== "undefined")
-      houseNumsListCtlr.clear();
-    if (typeof streetsListCtlr !== "undefined")
-      streetsListCtlr.clear();
-    if (typeof precinctListCtlr !== "undefined")
-      precinctListCtlr.clear();
-    this.selectFunction(code);
-  },
+  //handleSelection: function(code) {
+  //  if (typeof blockListCtlr !== "undefined")
+  //    blockListCtlr.clear();
+  //  if (typeof streetListCtlr !== "undefined")
+  //    streetListCtlr.clear();
+  //  if (typeof precinctListCtlr !== "undefined")
+  //    precinctListCtlr.clear();
+  //  this.selectFunction(code);
+  //},
 
   getSelected: function() {
     return $$("jurisdictionList").getSelectedItem();
@@ -109,8 +110,12 @@ var jurisdictionPanel = {
 Jurisdiction Panel Controller
 =====================================================================*/
 var jurisdictionPanelCtlr = {
-  init: function(selectFunction) {
+  init: function() {
     jurisdictionListToolbarCtlr.init();
-    jurisdictionListCtlr.init(selectFunction);
+    jurisdictionListCtlr.init();
+  },
+
+  clear: function() {
+    jurisdictionListCtlr.clear();
   }
 };

@@ -5,27 +5,19 @@
 /*=====================================================================
 Contact Query Panel
 =====================================================================*/
-var contactQueryPanel = {
-  cols: [
-    jurisdictionPanel,
-    wardPanel,
-    precinctPanel,
-    streetsPanel,
-    houseNumsPanel
-  ]
-};
+var contactQueryPanel = webix.clone(turfPanel);
 
 /*=====================================================================
 Contact Query Panel Controller
 =====================================================================*/
 var contactQueryPanelCtlr = {
   init: function() {
-    jurisdictionPanelCtlr.init(wardListCtlr.load);
-    jurisdictionListCtlr.load();
-    wardPanelCtlr.init();
-    precinctPanelCtlr.init();
-    streetsPanelCtlr.init();
-    houseNumsPanelCtlr.init(this.export);
+    //jurisdictionPanelCtlr.init(wardListCtlr.load);
+    //jurisdictionListCtlr.load();
+    //wardPanelCtlr.init();
+    //precinctPanelCtlr.init();
+    //streetPanelCtlr.init();
+    //blockPanelCtlr.init(this.export);
   },
 
   export: function() {
@@ -88,7 +80,7 @@ var contactQueryPanelCtlr = {
     }
     args.precinct_no = precinct.precinct;
 
-    var blocks = houseNumsListCtlr.getSelected();
+    var blocks = blockListCtlr.getSelected();
     if (blocks.length == 0) {
       return args;
     }

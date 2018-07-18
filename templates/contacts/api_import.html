@@ -1,18 +1,4 @@
-{% extends 'home.html' %}
-
-{% block styles %}
-  {{ super() }}
-	<style>
-    .toolbarRadio .webix_label_right { color: white; }
-    .check {
-      float: right;
-      margin: 7px;
-    }
-  .check:hover {
-    color: #3498db;
-  }
-	</style>
-{% endblock %}
+{% extends 'layout.html' %}
 
 {% block content %}
   <div id="content_container"></div>
@@ -23,7 +9,6 @@
 
   <script>
     var jurisdictions = {{ jurisdictions|tojson }};
-    var filename = "";
   </script>
 
   <script src="{{ url_for('static', filename='js/ajax_dao.js') }}"></script>
@@ -31,10 +16,11 @@
   <script src="{{ url_for('static', filename='js/jurisdiction_panel.js') }}"></script>
   <script src="{{ url_for('static', filename='js/ward_panel.js') }}"></script>
   <script src="{{ url_for('static', filename='js/precinct_panel.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/streets_panel.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/house_nums_panel.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/con_query_panel.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/csv_export_table.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/street_panel.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/block_panel.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/turf_panel.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/contacts/grid_panel.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/contacts/api_import_panel.js') }}"></script>
 
   <script type="text/javascript" charset="utf-8">
 
@@ -42,13 +28,10 @@
 
       webix.ui({
         container: "content_container",
-        type: "wide",
-        width: 1200,
-        rows: [contactQueryPanel, csvExportTable]
+        rows: [conApiImportPanel]
       });
 
-      contactQueryPanelCtlr.init();
-      csvExportTableCtlr.init();
+      conApiImportPanelCtlr.init();
     });
 
   </script>

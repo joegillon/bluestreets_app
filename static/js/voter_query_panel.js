@@ -9,8 +9,8 @@ var voterQueryPanel = {
   cols: [
     jurisdictionPanel,
     precinctPanel,
-    streetsPanel,
-    houseNumsPanel
+    streetPanel,
+    blockPanel
   ]
 };
 
@@ -22,8 +22,8 @@ var voterQueryPanelCtlr = {
     precinctPanelCtlr.init();
     jurisdictionPanelCtlr.init(precinctListCtlr.load);
     jurisdictionListCtlr.load();
-    streetsPanelCtlr.init();
-    houseNumsPanelCtlr.init(this.export);
+    streetPanelCtlr.init();
+    blockPanelCtlr.init(this.export);
   },
 
   export: function() {

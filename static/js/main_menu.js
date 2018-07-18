@@ -28,7 +28,8 @@ var menu_data = [
     icon: "address-card-o",
     value: "Contacts",
     submenu: [
-      {id: "con_import", value: "Import Spreadsheet"},
+      {id: "con_import_api", value: "Import from API"},
+      {id: "con_import_ss", value: "Import Spreadsheet"},
       {id: "con_entry", value: "Direct Entry"},
       {id: "con_export", value: "Export List"},
       {id: "con_crewboard", value: "Battle Stations"}
@@ -104,7 +105,12 @@ var mainMenu = {
         window.location.href = Flask.url_for('vtr.worksheet');
         return;
       }
-      if (id == "con_import") {
+      if (id == "con_import_api") {
+        //noinspection JSUnresolvedVariable,JSUnresolvedFunction
+        window.location.href = Flask.url_for("con.api_import");
+        return;
+      }
+      if (id == "con_import_ss") {
         //noinspection JSUnresolvedVariable,JSUnresolvedFunction
         window.location.href = Flask.url_for("con.csv_import");
         return;

@@ -13,9 +13,9 @@ var precinctList = {
   select: true,
   template: "#ward#: #precinct#",
   on: {
-    onItemDblClick: function() {
-      precinctListCtlr.handleSelection();
-    },
+    //onItemDblClick: function() {
+    //  precinctListCtlr.handleSelection();
+    //},
     onItemClick: function(id) {
       if (this.isSelected(id))
         this.unselect(id, true);
@@ -78,12 +78,12 @@ var precinctListCtlr = {
     this.list.select(ids);
   },
 
-  handleSelection: function() {
-    if (houseNumsListCtlr !== undefined)
-      houseNumsListCtlr.clear();
-    var item = this.list.getSelectedItem();
-    streetsListCtlr.load(item.jurisdiction_code, item.ward, item.precinct);
-  },
+  //handleSelection: function() {
+  //  if (blockListCtlr !== undefined)
+  //    blockListCtlr.clear();
+  //  var item = this.list.getSelectedItem();
+  //  streetListCtlr.load(item.jurisdiction_code, item.ward, item.precinct);
+  //},
 
   setMultiSelect: function() {
     this.list.define("multiselect", true);
@@ -136,5 +136,13 @@ var precinctPanelCtlr = {
   init: function() {
     precinctListToolbarCtlr.init();
     precinctListCtlr.init();
+  },
+
+  clear: function() {
+    precinctListCtlr.clear();
+  },
+
+  load: function(jurisCode, ward) {
+    precinctListCtlr.load(jurisCode, ward);
   }
 };

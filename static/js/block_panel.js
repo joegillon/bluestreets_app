@@ -3,11 +3,11 @@
  */
 
 /*=====================================================================
-HouseNums List
+Block List
 =====================================================================*/
-var houseNumsList = {
+var blockList = {
   view: "list",
-  id: "houseNumsList",
+  id: "blockList",
   width: 240,
   height: 280,
   select: true,
@@ -15,13 +15,13 @@ var houseNumsList = {
 };
 
 /*=====================================================================
-HouseNums List Controller
+Block List Controller
 =====================================================================*/
-var houseNumsListCtlr = {
+var blockListCtlr = {
   list: null,
 
   init: function() {
-    this.list = $$("houseNumsList");
+    this.list = $$("blockList");
   },
 
   clear: function() {
@@ -30,7 +30,7 @@ var houseNumsListCtlr = {
 
   add: function(low, high, oddEven) {
     var precinct_id = precinctListCtlr.getSelected().id;
-    var street = streetsListCtlr.getSelected();
+    var street = streetListCtlr.getSelected();
     var str = street.street_name + " " + street.street_type;
     var display = str;
     if (low) {
@@ -61,11 +61,11 @@ var houseNumsListCtlr = {
 };
 
 /*=====================================================================
-HouseNums List Toolbar
+Block List Toolbar
 =====================================================================*/
-var houseNumsListToolbar = {
+var blockListToolbar = {
   view: "toolbar",
-  id: "houseNumsListToolbar",
+  id: "blockListToolbar",
   height: 140,
   rows: [
     {
@@ -78,14 +78,14 @@ var houseNumsListToolbar = {
           view: "button",
           label: "Clear",
           click: function() {
-            houseNumsListToolbarCtlr.clear();
+            blockListToolbarCtlr.clear();
           }
         },
         {
           view: "button",
-          label: "Run",
+          label: "Import",
           click: function() {
-            houseNumsListToolbarCtlr.save();
+            blockListToolbarCtlr.import();
           }
         }
       ]
@@ -130,14 +130,14 @@ var houseNumsListToolbar = {
             var low = $$("lowAddr").getValue();
             var high = $$("hiAddr").getValue();
             var oddEven = $$("oddEven").getValue();
-            houseNumsListCtlr.add(low, high, oddEven);
+            blockListCtlr.add(low, high, oddEven);
           }
         },
         {
           view: "button",
           label: "Remove",
           click: function() {
-            houseNumsListCtlr.remove("", "", "");
+            blockListCtlr.remove("", "", "");
           }
         }
       ]
@@ -146,45 +146,45 @@ var houseNumsListToolbar = {
 };
 
 /*=====================================================================
-HouseNums List Toolbar Controller
+Block List Toolbar Controller
 =====================================================================*/
-var houseNumsListToolbarCtlr = {
+var blockListToolbarCtlr = {
   toolbar: null,
   list: null,
+  importFunc: null,
 
-  init: function(exportFunc) {
-    this.toolbar = $$("houseNumsListToolbar");
-    this.list = $$("houseNumsList");
-    this.exportFunc = exportFunc;
+  init: function(importFunc) {
+    this.toolbar = $$("blockListToolbar");
+    this.list = $$("blockList");
+    this.importFunc = importFunc;
   },
 
   clear: function() {
     $$("lowAddr").setValue("");
     $$("hiAddr").setValue("");
     $$("oddEven").setValue("B");
-    houseNumsListCtlr.clear();
+    blockListCtlr.clear();
   },
 
-  save: function() {
-    this.exportFunc();
-
+  import: function() {
+    this.importFunc();
   }
 
 };
 
 /*=====================================================================
-HouseNums Panel
+Block Panel
 =====================================================================*/
-var houseNumsPanel = {
-  rows: [houseNumsListToolbar, houseNumsList]
+var blockPanel = {
+  rows: [blockListToolbar, blockList]
 };
 
 /*=====================================================================
-HouseNums Panel Controller
+Block Panel Controller
 =====================================================================*/
-var houseNumsPanelCtlr = {
-  init: function(exportFunc) {
-    houseNumsListToolbarCtlr.init(exportFunc);
-    houseNumsListCtlr.init();
+var blockPanelCtlr = {
+  init: function(importFunc) {
+    blockListToolbarCtlr.init(importFunc);
+    blockListCtlr.init();
   }
 };

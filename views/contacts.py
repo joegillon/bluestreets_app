@@ -67,14 +67,14 @@ def entry():
         )
 
 
-@con.route('/export', methods=['GET'])
-def csv_export():
+@con.route('/api_import', methods=['GET'])
+def api_import():
     from models.turf import Turf
 
     dao = Dao()
     jurisdictions = Turf.get_jurisdictions(dao)
     return render_template(
-        'con_export.html',
+        'contacts/api_import.html',
         title='Contact Export',
         jurisdictions=jurisdictions
     )

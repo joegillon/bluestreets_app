@@ -11,12 +11,12 @@ var wardList = {
   width: 200,
   height: 400,
   select: true,
-  template: "#ward#",
-  on: {
-    onItemDblClick: function() {
-      wardListCtlr.handleSelection();
-    }
-  }
+  template: "#ward#"
+  //on: {
+  //  onItemDblClick: function() {
+  //    wardListCtlr.handleSelection();
+  //  }
+  //}
 };
 
 /*=====================================================================
@@ -56,17 +56,17 @@ var wardListCtlr = {
 
   getSelected: function() {
     return this.list.getSelectedItem();
-  },
-
-  handleSelection: function() {
-    if (houseNumsListCtlr !== undefined)
-      houseNumsListCtlr.clear();
-    if (streetsListCtlr !== undefined)
-      streetsListCtlr.clear();
-    var j_item = jurisdictionListCtlr.getSelected();
-    var w_item = this.list.getSelectedItem();
-    precinctListCtlr.load(j_item.code, w_item.ward);
   }
+
+  //handleSelection: function() {
+  //  if (blockListCtlr !== undefined)
+  //    blockListCtlr.clear();
+  //  if (streetListCtlr !== undefined)
+  //    streetListCtlr.clear();
+  //  var j_item = jurisdictionListCtlr.getSelected();
+  //  var w_item = this.list.getSelectedItem();
+  //  precinctListCtlr.load(j_item.code, w_item.ward);
+  //}
 };
 
 /*=====================================================================
@@ -115,5 +115,13 @@ var wardPanelCtlr = {
   init: function() {
     wardListToolbarCtlr.init();
     wardListCtlr.init();
+  },
+
+  clear: function() {
+    wardListCtlr.clear();
+  },
+
+  load: function(jurisCode) {
+    wardListCtlr.load(jurisCode);
   }
 };

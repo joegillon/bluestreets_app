@@ -3,34 +3,34 @@
  */
 
 /*=====================================================================
-Streets List
+Street List
 =====================================================================*/
-var streetsList = {
+var streetList = {
   view: "list",
-  id: "streetsList",
+  id: "streetList",
   width: 200,
   height: 400,
   select: true,
   template: "#street_name# #street_type#"
   //on: {
   //  onItemClick: function() {
-  //    houseNumsListToolbarCtlr.clear();
+  //    blockListToolbarCtlr.clear();
   //  }
   //}
 };
 
 /*=====================================================================
-Streets List Controller
+Street List Controller
 =====================================================================*/
-var streetsListCtlr = {
+var streetListCtlr = {
   list: null,
 
   init: function() {
-    this.list = $$("streetsList");
+    this.list = $$("streetList");
   },
 
   clear: function() {
-    $$("streetsList").clearAll();
+    $$("streetList").clearAll();
   },
 
   load: function(jurisdiction_code, ward, precinct) {
@@ -44,7 +44,7 @@ var streetsListCtlr = {
     });
 
     ajaxDao.get(url, function(data) {
-      $$("streetsList").parse(data["streets"]);
+      $$("streetList").parse(data["streets"]);
     });
 
   },
@@ -61,20 +61,20 @@ var streetsListCtlr = {
 };
 
 /*=====================================================================
-Streets List Toolbar
+Street List Toolbar
 =====================================================================*/
-var streetsListToolbar = {
+var streetListToolbar = {
   view: "toolbar",
-  id: "streetsListToolbar",
+  id: "streetListToolbar",
   height: 35,
   elements: [
     {
       view: "text",
-      id: "streetsFilter",
+      id: "streetFilter",
       label: "Street",
       on: {
         onTimedKeyPress: function() {
-          streetsListCtlr.filter(this.getValue().toLowerCase());
+          streetListCtlr.filter(this.getValue().toLowerCase());
         }
       }
     }
@@ -82,29 +82,37 @@ var streetsListToolbar = {
 };
 
 /*=====================================================================
-Streets List Toolbar Controller
+Street List Toolbar Controller
 =====================================================================*/
-var streetsListToolbarCtlr = {
+var streetListToolbarCtlr = {
   toolbar: null,
 
   init: function() {
-    this.toolbar = $$("streetsListToolbar");
+    this.toolbar = $$("streetListToolbar");
   }
 };
 
 /*=====================================================================
-Streets Panel
+Street Panel
 =====================================================================*/
-var streetsPanel = {
-  rows: [streetsListToolbar, streetsList]
+var streetPanel = {
+  rows: [streetListToolbar, streetList]
 };
 
 /*=====================================================================
-Streets Panel Controller
+Street Panel Controller
 =====================================================================*/
-var streetsPanelCtlr = {
+var streetPanelCtlr = {
   init: function() {
-    streetsListToolbarCtlr.init();
-    streetsListCtlr.init();
+    streetListToolbarCtlr.init();
+    streetListCtlr.init();
+  },
+
+  clear: function() {
+    streetListCtlr.clear();
+  },
+
+  load: function(jurisCode, ward, pct) {
+    streetListCtlr.load(jurisCode, ward, pct);
   }
 };
