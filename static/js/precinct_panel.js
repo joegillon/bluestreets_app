@@ -8,22 +8,10 @@ Precinct List
 var precinctList = {
   view: "list",
   id: "precinctList",
-  width: 200,
+  width: 250,
   height: 400,
   select: true,
-  template: "#ward#: #precinct#",
-  on: {
-    //onItemDblClick: function() {
-    //  precinctListCtlr.handleSelection();
-    //},
-    onItemClick: function(id) {
-      if (this.isSelected(id))
-        this.unselect(id, true);
-      else
-        this.select(id, true);
-      return false;
-    }
-  }
+  template: "#jurisdiction_name#: #ward#: #precinct#"
 };
 
 /*=====================================================================
@@ -34,39 +22,20 @@ var precinctListCtlr = {
 
   init: function() {
     this.list = $$("precinctList");
+    this.load();
   },
 
   clear: function() {
     this.list.clearAll();
   },
 
-  load: function(jurisdiction_code, ward_no) {
-    // Can't use 'this' here... JS BS.
-    $$("precinctList").clearAll();
-
-    var args = {jurisdiction_code: jurisdiction_code};
-    $$("precinctList").define('template', "#ward#: #precinct#");
-
-    if (arguments.length == 2) {
-      args['ward_no'] = ward_no;
-      $$("precinctList").define('template', "#precinct#");
-    }
-
-    //noinspection JSUnresolvedFunction,JSUnresolvedVariable
-    var url = Flask.url_for("trf.get_precincts", args);
-
-    ajaxDao.get(url, function(data) {
-      $$("precinctList").parse(data["precincts"]);
-      if (data["precincts"].length == 1) {
-        $$("precinctList").select($$("precinctList").getIdByIndex(0));
-        precinctListCtlr.handleSelection();
-      }
-    });
+  load: function() {
+    this.list.parse(precincts);
   },
 
   filter: function(value) {
     this.list.filter(function(obj) {
-      return obj.ward.toLowerCase().indexOf(value) == 0;
+      return startswith(obj["jurisdiction_name"], value);
     })
   },
 
@@ -77,13 +46,6 @@ var precinctListCtlr = {
   select: function(ids) {
     this.list.select(ids);
   },
-
-  //handleSelection: function() {
-  //  if (blockListCtlr !== undefined)
-  //    blockListCtlr.clear();
-  //  var item = this.list.getSelectedItem();
-  //  streetListCtlr.load(item.jurisdiction_code, item.ward, item.precinct);
-  //},
 
   setMultiSelect: function() {
     this.list.define("multiselect", true);
@@ -98,6 +60,15 @@ var precinctListToolbar = {
   id: "precinctListToolbar",
   height: 35,
   elements: [
+    {
+      view: "button",
+      label: "All",
+      id: "allBtn",
+      width: 50,
+      click: function() {
+        conApiImportPanelCtlr.execute();
+      }
+    },
     {
       view: "text",
       id: "precinctFilter",

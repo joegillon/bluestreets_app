@@ -64,6 +64,7 @@ def run_server():
     config.read(app_path + '/bluestreets.cfg')
     # server.secret_key = config['USER_MGT']['key']
     server.config['DB_PATH'] = os.path.join(app_path, 'data/bst.db')
+    server.config['API_URL'] = 'http://localhost:5000'
 
     server.run(host="127.0.0.1", port=23948, threaded=True)
 

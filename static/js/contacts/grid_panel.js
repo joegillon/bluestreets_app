@@ -10,13 +10,19 @@ var conGrid = {
   id: "conGrid",
   editable: false,
   select: "row",
-  height: 500,
-  width: 500,
+  height: 300,
+  autowidth: true,
   tooltip: true,
   columns: [
     {id: 'id', hidden: true},
     {id: 'name', header: 'Name', adjust: 'data'},
-    {id: 'address', header: 'Address', adjust: 'data', tooltip: "#city# #zipcode#"}
+    {id: "nickname", header: "Nickname"},
+    {id: 'address', header: 'Address', adjust: 'data', tooltip: "#city# #zipcode#"},
+    {id: "email", header: "Email"},
+    {id: "phone1", header: "Phone 1"},
+    {id: "phone2", header: "Phone 2"},
+    {id: "gender", header: "Gender"},
+    {id: "birth_year", header: "BYr"}
   ],
   on: {
     onSelectChange: function() {
@@ -40,10 +46,11 @@ var conGridCtlr = {
     this.grid.clearAll();
   },
 
-  load: function() {
+  load: function(contacts) {
     this.clear();
-    this.formatData(contacts);
+    //this.formatData(contacts);
     this.grid.parse(contacts);
+    this.grid.adjust();
   },
 
   filter: function(value) {

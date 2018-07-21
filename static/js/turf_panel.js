@@ -7,8 +7,6 @@ Turf Panel
 =====================================================================*/
 var turfPanel = {
   cols: [
-    jurisdictionPanel,
-    wardPanel,
     precinctPanel,
     streetPanel,
     blockPanel
@@ -20,43 +18,29 @@ Turf Panel Controller
 =====================================================================*/
 var turfPanelCtlr = {
   panel: null,
-  jurisCode: null,
-  ward: null,
   pct: null,
 
-  init: function(importFunc) {
+  init: function() {
     this.panel = $$("turfPanel");
 
-    jurisdictionPanelCtlr.init();
-    wardPanelCtlr.init();
     precinctPanelCtlr.init();
     streetPanelCtlr.init();
-    blockPanelCtlr.init(importFunc);
+    blockPanelCtlr.init();
 
-    $$("jurisdictionList").attachEvent("onItemDblClick", function() {
-      turfPanelCtlr.jurisCode = $$("jurisdictionList").getSelectedItem().code;
-      wardPanelCtlr.clear();
-      precinctListCtlr.clear();
+    $$("precinctList").attachEvent("onSelectChange", function() {
+      turfPanelCtlr.pct = $$("precinctList").getSelectedItem();
       streetListCtlr.clear();
       blockListCtlr.clear();
-      wardPanelCtlr.load(turfPanelCtlr.jurisCode);
+      streetListCtlr.load(
+        turfPanelCtlr.pct["jurisdiction_code"],
+        turfPanelCtlr.pct["ward"],
+        turfPanelCtlr.pct["precinct"]);
     });
 
-    $$("wardList").attachEvent("onItemDblClick", function() {
-      turfPanelCtlr.ward = $$("wardList").getSelectedItem().ward;
-      precinctListCtlr.clear();
-      streetListCtlr.clear();
-      blockListCtlr.clear();
-      precinctListCtlr.load(turfPanelCtlr.jurisCode, turfPanelCtlr.ward)
-    });
+  },
 
-    $$("precinctList").attachEvent("onItemDblClick", function() {
-      turfPanelCtlr.pct = $$("precinctList").getSelectedItem().precinct;
-      streetListCtlr.clear();
-      blockListCtlr.clear();
-      streetListCtlr.load(turfPanelCtlr.jurisCode, turfPanelCtlr.ward, turfPanelCtlr.pct);
-    });
-
+  getSelections: function() {
+    return blockListCtlr.getSelected();
   }
 };
 

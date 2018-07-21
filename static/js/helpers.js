@@ -168,3 +168,7 @@ function getWebixList(list) {
   }
   return items;
 }
+
+function startswith(str, target) {
+  return str.substring(0, target.length).toLowerCase() == target.toLowerCase();
+}

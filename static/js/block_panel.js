@@ -84,9 +84,7 @@ var blockListToolbar = {
         {
           view: "button",
           label: "Import",
-          click: function() {
-            blockListToolbarCtlr.import();
-          }
+          id: "conApiImportBtn"
         }
       ]
     },
@@ -151,12 +149,10 @@ Block List Toolbar Controller
 var blockListToolbarCtlr = {
   toolbar: null,
   list: null,
-  importFunc: null,
 
-  init: function(importFunc) {
+  init: function() {
     this.toolbar = $$("blockListToolbar");
     this.list = $$("blockList");
-    this.importFunc = importFunc;
   },
 
   clear: function() {
@@ -164,10 +160,6 @@ var blockListToolbarCtlr = {
     $$("hiAddr").setValue("");
     $$("oddEven").setValue("B");
     blockListCtlr.clear();
-  },
-
-  import: function() {
-    this.importFunc();
   }
 
 };
@@ -183,8 +175,8 @@ var blockPanel = {
 Block Panel Controller
 =====================================================================*/
 var blockPanelCtlr = {
-  init: function(importFunc) {
-    blockListToolbarCtlr.init(importFunc);
+  init: function() {
+    blockListToolbarCtlr.init();
     blockListCtlr.init();
   }
 };

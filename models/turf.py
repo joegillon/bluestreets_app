@@ -68,7 +68,7 @@ class Turf(object):
 
     @staticmethod
     def get_precincts(dao, jurisdiction_code=None, ward_no=None):
-        sql = "SELECT * FROM precincts"
+        sql = "SELECT * FROM precincts "
         vals = None
         if jurisdiction_code:
             sql += " WHERE jurisdiction_code=?"
@@ -76,7 +76,7 @@ class Turf(object):
         if ward_no:
             sql += " AND ward=?"
             vals = (jurisdiction_code, ward_no)
-        sql += ';'
+        sql += 'ORDER BY jurisdiction_name, ward, precinct;'
         return dao.execute(sql, vals)
 
     @staticmethod

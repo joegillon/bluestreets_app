@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify, render_template
 import json
 from models.contact import Contact
 from models.dao import Dao
+from models.api_client import ApiClient
 from models.address import Address
 from models.turf import Turf
 from models.person_name import PersonName
@@ -67,17 +68,22 @@ def entry():
         )
 
 
-@con.route('/api_import', methods=['GET'])
+@con.route('/api_import', methods=['GET', 'POST'])
 def api_import():
     from models.turf import Turf
 
-    dao = Dao()
-    jurisdictions = Turf.get_jurisdictions(dao)
-    return render_template(
-        'contacts/api_import.html',
-        title='Contact Export',
-        jurisdictions=jurisdictions
-    )
+    if request.method == 'GET':
+        dao = Dao()
+        precincts = Turf.get_precincts(dao)
+        return render_template(
+            'contacts/api_import.html',
+            title='Contact Export',
+            precincts=precincts
+        )
+
+    url = 'con_api/get_by_block'
+    contacts = ApiClient.post(url, request.form['params'])['contacts']
+    return jsonify(contacts=to_local_format(contacts))
 
 
 @con.route('/get', methods=['GET'])
@@ -135,6 +141,14 @@ def con_get():
     } for contact in contacts]
 
     return jsonify(contacts=contacts)
+
+
+def to_local_format(contacts):
+    for contact in contacts:
+        con_obj = Contact(contact)
+        contact['name'] = str(con_obj.name)
+        contact['address'] = str(con_obj.address)
+    return contacts
 
 
 @con.route('/synchronize', methods=['GET', 'POST'])

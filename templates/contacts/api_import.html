@@ -8,13 +8,11 @@
   {{ super() }}
 
   <script>
-    var jurisdictions = {{ jurisdictions|tojson }};
+    var precincts = {{ precincts|tojson }};
   </script>
 
   <script src="{{ url_for('static', filename='js/ajax_dao.js') }}"></script>
   <script src="{{ url_for('static', filename='js/helpers.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/jurisdiction_panel.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/ward_panel.js') }}"></script>
   <script src="{{ url_for('static', filename='js/precinct_panel.js') }}"></script>
   <script src="{{ url_for('static', filename='js/street_panel.js') }}"></script>
   <script src="{{ url_for('static', filename='js/block_panel.js') }}"></script>
