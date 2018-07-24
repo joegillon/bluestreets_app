@@ -9,6 +9,7 @@
 
   <script>
     var precincts = {{ precincts|tojson }};
+    var data_path = {{ data_path|tojson }};
   </script>
 
   <script src="{{ url_for('static', filename='js/ajax_dao.js') }}"></script>

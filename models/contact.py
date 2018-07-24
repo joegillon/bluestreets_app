@@ -13,7 +13,7 @@ class Contact(object):
         'birth_year', 'gender', 'email', 'phone1', 'phone2',
         'house_number', 'pre_direction', 'street_name', 'street_type',
         'suf_direction', 'unit', 'street_name_meta', 'city', 'zipcode',
-        'precinct_id', 'voter_id', 'reg_date'
+        'precinct_id', 'voter_id', 'reg_date', 'bst_id'
     ]
 
     def __init__(self, d=None):
@@ -25,6 +25,7 @@ class Contact(object):
         self.address = None
         self.voter_id = None
         self.reg_date = ''
+        self.bst_id = None
         if d:
             for attr in self.__dict__:
                 if attr in d:
@@ -47,6 +48,7 @@ class Contact(object):
             'voter_id': self.voter_id,
             'reg_date': self.reg_date,
             'id': self.id,
+            'bst_id': self.bst_id
         }
 
     def get_values(self):
@@ -75,7 +77,8 @@ class Contact(object):
             self.address.zipcode,
             self.address.precinct_id,
             self.voter_id,
-            self.reg_date
+            self.reg_date,
+            self.bst_id
         )
 
     @staticmethod
@@ -175,12 +178,10 @@ class Contact(object):
         dao.execute(sql, vals)
 
     @staticmethod
-    def add_many(data, dao=None):
+    @get_dao
+    def add_many(dao, data):
         contacts = [Contact(d) for d in data]
         values = [contact.get_values() for contact in contacts]
-
-        if not dao:
-            dao = Dao()
         dao.add_many('contacts', Contact.db_cols, values)
 
     @staticmethod

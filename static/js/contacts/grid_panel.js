@@ -48,7 +48,6 @@ var conGridCtlr = {
 
   load: function(contacts) {
     this.clear();
-    //this.formatData(contacts);
     this.grid.parse(contacts);
     this.grid.adjust();
   },
@@ -59,42 +58,9 @@ var conGridCtlr = {
     })
   },
 
-  formatData: function(contacts) {
-    contacts.forEach(function(contact) {
-      contact.name = (
-          contact.last_name + ', ' +
-          contact.first_name + ' ' +
-          contact.middle_name + ' ' +
-          contact.name_suffix).trim();
-      contact.address = "";
-      if (contact.street_name) {
-        if (contact.house_number)
-          contact.address = contact.house_number;
-        if (contact.pre_direction)
-          contact.address += " " + contact.pre_direction;
-        contact.address += " " + contact.street_name;
-        if (contact.street_type)
-          contact.address += " " + contact.street_type;
-        if (contact.suf_direction)
-          contact.address += " " + contact.suf_direction;
-        if (contact.unit)
-          contact.address += " #" + contact.unit;
-      }
-    });
-  },
-
-  reselect: function() {
-    this.grid.select(this.grid.getSelectedId().row);
-  },
-
-  remove: function() {
-    this.grid.remove(this.grid.getSelectedId());
-  },
-
-  autoRun: function() {
-
+  getData: function() {
+    return this.grid.data.pull;
   }
-
 };
 
 /*=====================================================================
@@ -104,16 +70,17 @@ var conGridToolbar = {
   view: "toolbar",
   id: "conGridToolbar",
   height: 35,
-  elements: [
+  paddingY: 2,
+  cols: [
     {
       view: "label",
-      label: "Unresolved Records"
+      label: "Contacts"
     },
     {
       view: "search",
       id: "conGridFilter",
       placeholder: "Search...",
-      width: 100,
+      width: 150,
       on: {
         onTimedKeyPress: function() {
           conGridCtlr.filter(this.getValue());
@@ -121,11 +88,18 @@ var conGridToolbar = {
       }
     },
     {
+      view: "text",
+      label: "CSV File",
+      id: "csvFile",
+      width: 200
+    },
+    {
       view: "button",
       width: 100,
-      label: "Auto-lookup",
-      click: "conGridCtlr.autoRun();"
-    }
+      label: "Save",
+      click: "conGridToolbarCtlr.save();"
+    },
+    {}
   ]
 };
 
@@ -134,9 +108,37 @@ Contact Grid Toolbar Controller
 =====================================================================*/
 var conGridToolbarCtlr = {
   toolbar: null,
+  csvFile: null,
 
   init: function() {
     this.toolbar = $$("conGridToolbar");
+  },
+
+  save: function() {
+    this.saveDB();
+    this.saveCsv();
+  },
+
+  saveDB: function() {
+    var data = conGridCtlr.getData();
+
+    //noinspection JSUnresolvedVariable,JSUnresolvedFunction
+    var url = Flask.url_for("con.add_many");
+
+    ajaxDao.post(url, data, function(result) {
+      webix.message("Records saved!");
+    })
+  },
+
+  saveCsv: function() {
+    var csvFile = $$("csvFile").getValue();
+    if (csvFile == "") return;
+    webix.csv.delimiter.rows = "\n";
+    webix.csv.delimiter.cols = ",";
+    webix.toCSV($$("conGrid"), {
+      ignore: {"id": true},
+      filename: csvFile
+    });
   }
 };
 

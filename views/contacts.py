@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify, render_template
+from flask import current_app as app
 import json
 from models.contact import Contact
 from models.dao import Dao
@@ -78,7 +79,8 @@ def api_import():
         return render_template(
             'contacts/api_import.html',
             title='Contact Export',
-            precincts=precincts
+            precincts=precincts,
+            data_path=app.config['DATA_PATH']
         )
 
     url = 'con_api/get_by_block'
@@ -353,11 +355,16 @@ def dup_emails():
 #         return jsonify(error=str(ex))
 
 
-@con.route('/add_list', methods=['POST'])
-def add_list():
+@con.route('/add_many', methods=['POST'])
+def add_many():
     data = json.loads(request.form['params'])
+    data = list(data.values())
+    for rec in data:
+        del rec['address']
+        del rec['name']
+        rec['bst_id'] = rec.pop('id')
     try:
-        Contact.add_list(data)
+        Contact.add_many(data)
         return jsonify(msg='Records saved!')
     except Exception as ex:
         return jsonify(error=str(ex))
