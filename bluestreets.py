@@ -6,7 +6,10 @@ from server import run_server
 
 def main():
     sys.excepthook = cef.ExceptHook
-    settings = {}
+    settings = {
+        # 'cache_path': 'c:/bench/bluestreets_app',
+        # 'persist_user_preferences': 1
+    }
     cef.Initialize(settings=settings)
     browser = cef.CreateBrowserSync(url='http://127.0.0.1:23948/',
                                     window_title="Bluestreets")

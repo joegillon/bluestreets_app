@@ -78,7 +78,7 @@ def api_import():
         precincts = Turf.get_precincts(dao)
         return render_template(
             'contacts/api_import.html',
-            title='Contact Export',
+            title='Contact Import',
             precincts=precincts,
             data_path=app.config['DATA_PATH']
         )

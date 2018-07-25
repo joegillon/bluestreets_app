@@ -19,7 +19,7 @@ var menu_data = [
     icon: "users",
     value: "Voters",
     submenu: [
-      {id: "worksheet", value: "Worksheet"},
+      {id: "vtr_import_api", value: "Import from API"},
       {id: "voter_import", value: "Import Spreadsheet"}
     ]
   },
@@ -100,9 +100,9 @@ var mainMenu = {
         window.location.href = Flask.url_for('vtr.csv_import');
         return;
       }
-      if (id == "worksheet") {
+      if (id == "vtr_import_api") {
         //noinspection JSUnresolvedVariable,JSUnresolvedFunction
-        window.location.href = Flask.url_for('vtr.worksheet');
+        window.location.href = Flask.url_for('vtr.api_import');
         return;
       }
       if (id == "con_import_api") {
