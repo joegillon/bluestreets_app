@@ -55,7 +55,7 @@ var conApiImportPanelCtlr = {
   init: function() {
     turfPanelCtlr.init();
     conGridPanelCtlr.init();
-    $$("conApiImportBtn").attachEvent("onItemClick", this.execute);
+    $$("apiImportBtn").attachEvent("onItemClick", this.execute);
     $$("allBtn").show();
   },
 

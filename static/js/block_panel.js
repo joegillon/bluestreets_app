@@ -84,7 +84,7 @@ var blockListToolbar = {
         {
           view: "button",
           label: "Import",
-          id: "conApiImportBtn"
+          id: "apiImportBtn"
         }
       ]
     },

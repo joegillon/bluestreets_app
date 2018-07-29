@@ -55,7 +55,7 @@ var vtrApiImportPanelCtlr = {
   init: function() {
     turfPanelCtlr.init();
     vtrGridPanelCtlr.init();
-    $$("vtrApiImportBtn").attachEvent("onItemClick", this.execute);
+    $$("apiImportBtn").attachEvent("onItemClick", this.execute);
     $$("allBtn").show();
   },
 

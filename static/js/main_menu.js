@@ -10,17 +10,14 @@ var skins = [
 
 var menu_data = [
   {
-    id: "login",
-    icon: "sign-in",
-    value: "Log in"
-  },
-  {
     id: "voter_lists",
     icon: "users",
     value: "Voters",
     submenu: [
       {id: "vtr_import_api", value: "Import from API"},
-      {id: "voter_import", value: "Import Spreadsheet"}
+      {id: "vtr_import_csv", value: "Import Spreadsheet"},
+      {id: "vtr_worksheet", value: "Worksheet"},
+      {id: "vtr_sync", value: "Synchronize"}
     ]
   },
   {
@@ -29,10 +26,10 @@ var menu_data = [
     value: "Contacts",
     submenu: [
       {id: "con_import_api", value: "Import from API"},
-      {id: "con_import_ss", value: "Import Spreadsheet"},
+      {id: "con_import_csv", value: "Import Spreadsheet"},
       {id: "con_entry", value: "Direct Entry"},
-      {id: "con_export", value: "Export List"},
-      {id: "con_crewboard", value: "Battle Stations"}
+      {id: "con_crewboard", value: "Battle Stations"},
+      {id: "con_sync", value: "Synchronize"}
     ]
   },
   {
@@ -53,16 +50,6 @@ var menu_data = [
     ]
   },
   {
-    id: "usermgt",
-    icon: "key",
-    value: "Users",
-    submenu: [
-      {id: "request_account", value: "Request Account"},
-      {id: "change_pw", value: "Change Password"},
-      {id: "user_mgt", value: "Manage Accounts"}
-    ]
-  },
-  {
     id: "skins",
     icon: "",
     value: "Skins",
@@ -80,29 +67,14 @@ var mainMenu = {
   },
   on: {
     onMenuItemClick: function(id) {
-      if (id == "login") {
-        //noinspection JSUnresolvedVariable,JSUnresolvedFunction
-        window.location.href = Flask.url_for('usr.login');
-        return;
-      }
-      if (id == "user_mgt") {
-        //noinspection JSUnresolvedVariable,JSUnresolvedFunction
-        window.location.href = Flask.url_for('usr.user_mgt');
-        return;
-      }
-      if (id == "change") {
-        //noinspection JSUnresolvedVariable,JSUnresolvedFunction
-        window.location.href = Flask.url_for('usr.change_pw');
-        return;
-      }
-      if (id == "voter_import") {
-        //noinspection JSUnresolvedVariable,JSUnresolvedFunction
-        window.location.href = Flask.url_for('vtr.csv_import');
-        return;
-      }
       if (id == "vtr_import_api") {
         //noinspection JSUnresolvedVariable,JSUnresolvedFunction
         window.location.href = Flask.url_for('vtr.api_import');
+        return;
+      }
+      if (id == "vtr_import_csv") {
+        //noinspection JSUnresolvedVariable,JSUnresolvedFunction
+        window.location.href = Flask.url_for('vtr.csv_import');
         return;
       }
       if (id == "con_import_api") {
@@ -110,7 +82,7 @@ var mainMenu = {
         window.location.href = Flask.url_for("con.api_import");
         return;
       }
-      if (id == "con_import_ss") {
+      if (id == "con_import_csv") {
         //noinspection JSUnresolvedVariable,JSUnresolvedFunction
         window.location.href = Flask.url_for("con.csv_import");
         return;
@@ -120,9 +92,9 @@ var mainMenu = {
         window.location.href = Flask.url_for("con.entry");
         return;
       }
-      if (id == "con_export") {
+      if (id == "con_sync") {
         //noinspection JSUnresolvedVariable,JSUnresolvedFunction
-        window.location.href = Flask.url_for("con.csv_export");
+        window.location.href = Flask.url_for("con.sync");
         return;
       }
       if (id == "con_crewboard") {
@@ -152,7 +124,7 @@ var mainMenu = {
       }
       if (id == "synchronize") {
         //noinspection JSUnresolvedVariable,JSUnresolvedFunction
-        window.location.href = Flask.url_for("con.synchronize");
+        window.location.href = Flask.url_for("con.voter_sync");
         return;
       }
       if (id == "groups") {

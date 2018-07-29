@@ -8,8 +8,6 @@ Contact Grid
 var conGrid = {
   view: "datatable",
   id: "conGrid",
-  editable: false,
-  select: "row",
   height: 300,
   autowidth: true,
   tooltip: true,
@@ -23,12 +21,7 @@ var conGrid = {
     {id: "phone2", header: "Phone 2"},
     {id: "gender", header: "Gender"},
     {id: "birth_year", header: "BYr"}
-  ],
-  on: {
-    onSelectChange: function() {
-      conPrecinctPanelCtlr.gridSelection();
-    }
-  }
+  ]
 };
 
 /*=====================================================================
@@ -125,7 +118,7 @@ var conGridToolbarCtlr = {
     //noinspection JSUnresolvedVariable,JSUnresolvedFunction
     var url = Flask.url_for("con.add_many");
 
-    ajaxDao.post(url, data, function(result) {
+    ajaxDao.post(url, data, function() {
       webix.message("Records saved!");
     })
   },

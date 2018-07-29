@@ -8,8 +8,6 @@ Voter Grid
 var vtrGrid = {
   view: "datatable",
   id: "vtrGrid",
-  editable: false,
-  select: "row",
   height: 300,
   autowidth: true,
   tooltip: true,
@@ -18,13 +16,11 @@ var vtrGrid = {
     {id: 'name', header: 'Name', adjust: 'data'},
     {id: 'address', header: 'Address', adjust: 'data', tooltip: "#city# #zipcode#"},
     {id: "gender", header: "Gender"},
-    {id: "birth_year", header: "BYr"}
-  ],
-  on: {
-    onSelectChange: function() {
-      vtrPrecinctPanelCtlr.gridSelection();
-    }
-  }
+    {id: "birth_year", header: "BYr"},
+    {id: "status", header: "Status"},
+    {id: "perm_abs", header: "Perm Absentee"},
+    {id: "uocava", header: "UOCAVA"}
+  ]
 };
 
 /*=====================================================================
@@ -121,7 +117,7 @@ var vtrGridToolbarCtlr = {
     //noinspection JSUnresolvedVariable,JSUnresolvedFunction
     var url = Flask.url_for("vtr.add_many");
 
-    ajaxDao.post(url, data, function(result) {
+    ajaxDao.post(url, data, function() {
       webix.message("Records saved!");
     })
   },

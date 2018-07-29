@@ -1,8 +1,9 @@
-from flask import Blueprint, request, jsonify, render_template, session, redirect, url_for
 import json
-from models.user import User, admin_only, login_required
-from models.dao import Dao
 
+from flask import Blueprint, request, jsonify, render_template, session
+
+from dao.dao import Dao
+from models.user import User, login_required
 
 usr = Blueprint('usr', __name__, url_prefix='/usr')
 

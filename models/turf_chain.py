@@ -1,6 +1,7 @@
 from abc import ABCMeta, abstractmethod
 from enum import Enum, auto
-from models.turf import Turf
+
+from dao.turf_dao import Turf
 
 
 class TurfLevel(Enum):

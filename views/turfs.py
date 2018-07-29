@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
-from models.dao import Dao
-from models.turf import Turf
 
+from dao.dao import Dao
+import dao.turf_dao as turf_dao
 
 trf = Blueprint('trf', __name__, url_prefix='/trf')
 
@@ -9,7 +9,7 @@ trf = Blueprint('trf', __name__, url_prefix='/trf')
 @trf.route('/get_wards', methods=['GET'])
 def get_wards():
     dao = Dao()
-    wards = Turf.get_wards(dao, request.args['jurisdiction_code'])
+    wards = turf_dao.get_wards(dao, request.args['jurisdiction_code'])
     return jsonify(wards=wards)
 
 
@@ -17,20 +17,20 @@ def get_wards():
 def get_precincts():
     dao = Dao()
     if 'ward_no' in request.args:
-        precincts = Turf.get_precincts(
+        precincts = turf_dao.get_precincts(
             dao,
             request.args['jurisdiction_code'],
             request.args['ward_no']
         )
     else:
-        precincts = Turf.get_precincts(dao, request.args['jurisdiction_code'])
+        precincts = turf_dao.get_precincts(dao, request.args['jurisdiction_code'])
     return jsonify(precincts=precincts)
 
 
 @trf.route('/get_streets', methods=['GET'])
 def get_streets():
     dao = Dao()
-    streets = Turf.get_streets(
+    streets = turf_dao.get_streets(
         dao,
         request.args['jurisdiction_code'],
         request.args['ward'],
@@ -42,7 +42,7 @@ def get_streets():
 @trf.route('/get_house_nums', methods=['GET'])
 def get_house_nums():
     dao = Dao()
-    nums = Turf.get_house_nums(
+    nums = turf_dao.get_house_nums(
         dao,
         request.args['county_code'],
         request.args['jurisdiction_code'],

@@ -1,0 +1,50 @@
+Voters
+	Import from API
+		vtr.api_import
+			voters/api_import.html
+				voters/api_import_panel.js
+					turf_panel.js
+					voters/grid_panel.js
+						vtr.add_many
+	Import Spreadsheet
+		vtr.csv_import
+			voters/csv_import.html
+	Worksheet
+		vtr.worksheet
+			voters/worksheet.html
+	Synchronize
+		vtr.sync
+	
+Contacts
+	Import from API
+		con.api_import
+			contacts/api_import.html
+				contacts/api_import_panel.js
+					turf_panel.js
+					contacts/grid_panel.js
+						con.add_many
+	Import Spreadsheet
+		con.csv_import
+			contacts/csv_import.html
+	Direct Entry
+		con.entry
+			contacts/entry.html
+	Battle Stations
+		con.crewboard
+			contacts/crewboard.html
+	Synchronize
+		con.sync
+	
+Groups
+
+Data Cleaning
+	Email Duplicates
+		con.email_duplicates
+	Phone Duplicates
+		con.phone_duplicates
+	Name + Address Duplicates
+		con.name_addr_duplicates
+	Name Duplicates
+		con.name_duplicates
+	Sync with Voters
+		con.voter_sync
