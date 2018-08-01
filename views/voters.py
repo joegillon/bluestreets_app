@@ -31,7 +31,7 @@ def api_import():
 
 @vtr.route('/csv_import', methods=['GET', 'POST'])
 def csv_import():
-    from models.submission import Submission
+    # from models.submission import Submission
 
     if request.method == 'GET':
         return render_template(
@@ -39,11 +39,11 @@ def csv_import():
             title='Voter Import'
         )
 
-    data = json.loads(request.form['params'])['data']
-    cities = turf_dao.get_cities()
-    submissions = [Submission.from_web(rec, cities) for rec in data if rec['data0']]
-    Voter.batch_lookup(submissions)
-    return jsonify(lookups=[submission.serialize() for submission in submissions])
+    # data = json.loads(request.form['params'])['data']
+    # cities = turf_dao.get_cities()
+    # submissions = [Submission.from_web(rec, cities) for rec in data if rec['data0']]
+    # Voter.batch_lookup(submissions)
+    # return jsonify(lookups=[submission.serialize() for submission in submissions])
 
 
 @vtr.route('/worksheet', methods=['GET', 'POST'])

@@ -11,6 +11,12 @@ var conGrid = {
   height: 300,
   autowidth: true,
   tooltip: true,
+  scheme: {
+    $init: function(obj) {
+      obj.phone1 = phone_prettify(obj.phone1);
+      obj.phone2 = phone_prettify(obj.phone2);
+    }
+  },
   columns: [
     {id: 'id', hidden: true},
     {id: 'name', header: 'Name', adjust: 'data'},

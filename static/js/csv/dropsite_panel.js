@@ -36,8 +36,7 @@ var csvDropsiteCtlr = {
   },
 
   processData: function(data) {
-    csvImportPanelCtlr.theDelimiter = "\t";
-    csvImportPanelCtlr.setData(data);
+    csvCtlr.setData(data, "\t");
   }
 };
 

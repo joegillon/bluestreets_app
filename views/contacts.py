@@ -43,50 +43,50 @@ def to_local_format(contacts):
     return contacts
 
 
-# @con.route('/import', methods=['GET', 'POST'])
-# def csv_import():
-#     if request.method == 'GET':
-#         return render_template(
-#             'con_import.html',
-#             title='Contact Import'
-#         )
-#
-#     data = json.loads(request.form['params'])
-#     dao = Dao(stateful=True)
-#     # precincts = Precinct.get_by_jwp(dao)
-#     groups = Group.get_all_by_code(dao)
-#     memberships = []
-#     next_id = dao.get_max_id('contacts', 'id')
-#     for rec in data:
-#         rec['precinct_id'] = None
-#         next_id += 1
-#         # if rec['jurisdiction'] and rec['ward'] and rec['precinct']:
-#         #     jwp = '%s:%s:%s' % (
-#         #         rec['jurisdiction'].upper(),
-#         #         rec['ward'].zfill(2),
-#         #         rec['precinct'].zfill(3)
-#         #     )
-#         #     rec['precinct_id'] = precincts[jwp]['id']
-#         if rec['groups']:
-#             for code in rec['groups'].split('/'):
-#                 if code in groups:
-#                     memberships.append({
-#                         'group_id': groups[code]['id'],
-#                         'contact_id': next_id,
-#                         'role': '',
-#                         'comment': ''
-#                     })
-#
-#     try:
-#         con_dao.add_many(data)
-#         GroupMember.add_many(memberships)
-#         return jsonify(msg='Successful!')
-#     except Exception as ex:
-#         return jsonify(error=str(ex))
-#     finally:
-#         dao.close()
-#
-#
+@con.route('/import', methods=['GET', 'POST'])
+def csv_import():
+    if request.method == 'GET':
+        return render_template(
+            'contacts/csv_import.html',
+            title='Contact Import'
+        )
+
+    data = json.loads(request.form['params'])
+    dao = Dao(stateful=True)
+    # precincts = Precinct.get_by_jwp(dao)
+    groups = Group.get_all_by_code(dao)
+    memberships = []
+    next_id = dao.get_max_id('contacts', 'id')
+    for rec in data:
+        rec['precinct_id'] = None
+        next_id += 1
+        # if rec['jurisdiction'] and rec['ward'] and rec['precinct']:
+        #     jwp = '%s:%s:%s' % (
+        #         rec['jurisdiction'].upper(),
+        #         rec['ward'].zfill(2),
+        #         rec['precinct'].zfill(3)
+        #     )
+        #     rec['precinct_id'] = precincts[jwp]['id']
+        if rec['groups']:
+            for code in rec['groups'].split('/'):
+                if code in groups:
+                    memberships.append({
+                        'group_id': groups[code]['id'],
+                        'contact_id': next_id,
+                        'role': '',
+                        'comment': ''
+                    })
+
+    try:
+        con_dao.add_many(data)
+        GroupMember.add_many(memberships)
+        return jsonify(msg='Successful!')
+    except Exception as ex:
+        return jsonify(error=str(ex))
+    finally:
+        dao.close()
+
+
 # @con.route('/entry', methods=['GET', 'POST'])
 # def entry():
 #     if request.method == 'GET':

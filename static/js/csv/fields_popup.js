@@ -163,6 +163,9 @@ var csvFldsPropSheetCtlr = {
       else if (/^group/.test(csvFld.toLowerCase())) {
         values["groups"] = csvFld;
       }
+      else if (/^type/.test(csvFld.toLowerCase())) {
+        values["groups"] = csvFld;
+      }
       else if (/^jurisdiction/.test(csvFld.toLowerCase())) {
         values["jurisdiction"] = csvFld;
       }
@@ -170,6 +173,9 @@ var csvFldsPropSheetCtlr = {
         values["ward"] = csvFld;
       }
       else if (/^precinct/.test(csvFld.toLowerCase())) {
+        values["precinct"] = csvFld;
+      }
+      else if (/^pct/.test(csvFld.toLowerCase())) {
         values["precinct"] = csvFld;
       }
     });
@@ -191,26 +197,10 @@ var csvFldsPropSheetCtlr = {
         mapping[p] = "data" + this.csvFlds.indexOf(props[p]).toString();
       }
     }
-    csvImportPanelCtlr.loadData(mapping);
+    csvCtlr.loadData(mapping);
     csvFldsPopupCtlr.hide();
   }
 
-};
-
-/*=====================================================================
-CSV Fields Panel
-=====================================================================*/
-var csvFldsPanel = {
-  rows: [csvFldsPropSheet]
-};
-
-/*=====================================================================
-CSV Fields Panel Controller
-=====================================================================*/
-var csvFldsPanelCtlr = {
-  init: function() {
-    csvFldsPropSheetCtlr.init();
-  }
 };
 
 /*=====================================================================
@@ -247,7 +237,7 @@ var csvFldsPopup = {
     ]
   },
   body: {
-    cols: [ csvFldsPanel ]
+    cols: [ csvFldsPropSheet ]
   }
 };
 
@@ -260,7 +250,7 @@ var csvFldsPopupCtlr = {
   init: function() {
     this.popup = $$("csvFldsPopup");
     this.popup.hide();
-    csvFldsPanelCtlr.init();
+    csvFldsPropSheetCtlr.init();
   },
 
   show: function(csvFlds) {

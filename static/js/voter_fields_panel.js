@@ -110,7 +110,7 @@ var voterFldsPropSheetCtlr = {
   },
 
   save: function() {
-    voterCsvGridCtlr.setMappings(this.sheet.getValues());
+    voterCsvGridCtlr.setColumns(this.sheet.getValues());
     voterDropSiteToolbarCtlr.enableLoad();
     voterFldsPopupCtlr.hide();
   }

@@ -3,29 +3,16 @@
  */
 
 /*=====================================================================
-Has Column Names Confirm Box
+Contact CSV Import Panel
 =====================================================================*/
-var hasColnamesConfirm = {
-  title: "Column Names",
-  ok: "Yes",
-  cancel: "No",
-  text: "First line has column names",
-  callback: function(reply) {
-    csvImportPanelCtlr.mapFldsPopup(reply);
-  }
+var conCsvImportPanel = {
+  cols: [csvDropsitePanel, conGridPanel]
 };
 
 /*=====================================================================
-CSV Import Panel
+Contact CSV Import Panel Controller
 =====================================================================*/
-var csvImportPanel = {
-  cols: [csvDropsitePanel, csvGridPanel]
-};
-
-/*=====================================================================
-CSV Import Panel Controller
-=====================================================================*/
-var csvImportPanelCtlr = {
+var conCsvImportPanelCtlr = {
   alphabet: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
   theData: null,
   theDelimiter: ",",
@@ -33,12 +20,14 @@ var csvImportPanelCtlr = {
 
   init: function() {
     csvDropsitePanelCtlr.init();
-    csvGridPanelCtlr.init();
+    conGridPanelCtlr.init();
   },
 
   setData: function(data) {
     this.theData = data.split("\n");
-    webix.confirm(hasColnamesConfirm);
+    var hasColNames = confirm("First line has column names");
+    this.mapFldsPopup(hasColNames);
+    //webix.confirm(hasColnamesConfirm);
   },
 
   mapFldsPopup: function(hasColumnNames) {
@@ -65,6 +54,6 @@ var csvImportPanelCtlr = {
       if (flds[last_name_idx] != "" && flds[first_name_idx] != "")
         namedData.push(line);
     });
-    csvGridCtlr.load(namedData.join("\n"), mapping, this.theDelimiter);
+    conGridCtlr.load(namedData.join("\n"), mapping, this.theDelimiter);
   }
 };

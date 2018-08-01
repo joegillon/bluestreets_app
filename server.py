@@ -16,18 +16,6 @@ server.register_blueprint(grp)
 server.register_blueprint(trf)
 
 
-# @server.before_first_request
-# def set_user():
-#     session['user_id'] = None
-#     session['user_roles'] = None
-#
-#
-# @server.after_request
-# def add_header(response):
-#     response.headers['Cache-Control'] = 'no-store'
-#     return response
-
-
 @server.route('/')
 def homepage():
     return render_template(
@@ -56,12 +44,12 @@ def not_found():
 
 def run_server():
     import os
-    import configparser
+    # import configparser
 
     app_path = os.path.dirname(__file__)
 
-    config = configparser.ConfigParser()
-    config.read(app_path + '/bluestreets.cfg')
+    # config = configparser.ConfigParser()
+    # config.read(app_path + '/bluestreets.cfg')
     # server.secret_key = config['USER_MGT']['key']
     server.config['DATA_PATH'] = os.path.join(app_path, 'data\\')
     server.config['DB_PATH'] = os.path.join(app_path, 'data\\bst.db')

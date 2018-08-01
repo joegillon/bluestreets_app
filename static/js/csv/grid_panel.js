@@ -10,43 +10,43 @@ var csvVoterColumns = [
     id: "last_name",
     map: "#data0#",
     header: "Last Name",
-    adjust: "data"
+    adjust: true
   },
   {
     id: "first_name",
     map: "#data1#",
     header: "First Name",
-    adjust: "data"
+    adjust: true
   },
   {
     id: "middle_name",
     map: "#data2#",
     header: "Middle",
-    adjust:"data"
+    adjust: true
   },
   {
     id: "name_suffix",
     map: "#data3#",
     header: "Suffix",
-    adjust: "header"
+    adjust: true
   },
   {
     id: "address",
     map: "#data4#",
     header: "Address",
-    adjust: "data"
+    adjust: true
   },
   {
     id: "city",
     map: "#data5#",
     header: "City",
-    adjust: "data"
+    adjust: true
   },
   {
     id: "zipcode",
     map: "#data6#",
     header: "Zip",
-    adjust: "data"
+    adjust: true
   }
 ];
 
@@ -55,43 +55,43 @@ var csvContactColumns = csvVoterColumns.concat([
     id: "email",
     map: "#data7#",
     header: "Email",
-    adjust: "data"
+    adjust: true
   },
   {
     id: "phone1",
     map: "#data8#",
     header: "Phone 1",
-    adjust: "data"
+    adjust: true
   },
   {
     id: "phone2",
     map: "#data9#",
     header: "Phone 2",
-    adjust: "data"
+    adjust: true
   },
   {
     id: "groups",
     map: "#data10#",
     header: "Groups",
-    adjust: "data"
+    adjust: true
   },
   {
     id: "jurisdiction",
     map: "#data11#",
     header: "Jurisdiction",
-    adjust: "data"
+    adjust: true
   },
   {
     id: "ward",
     map: "#data12#",
     header: "Ward",
-    adjust: "data"
+    adjust: true
   },
   {
     id: "precinct",
     map: "#data13#",
     header: "Precinct",
-    adjust: "data"
+    adjust: true
   }
 ]);
 
@@ -101,7 +101,8 @@ CSV Grid
 var csvGrid = {
   view: "datatable",
   id: "csvGrid",
-  autoconfig: true,
+  //autoconfig: true,
+  autowidth: true,
   resizeColumn: true,
   datatype: "csv"
 };
@@ -122,13 +123,14 @@ var csvGridCtlr = {
 
   load: function(data, mapping, delimiter) {
     this.clear();
-    this.setMappings(mapping);
+    this.setColumns(mapping);
     webix.DataDriver.csv.cell = delimiter;
     webix.DataDriver.csv.row = "\n";
     this.grid.parse(data, "csv");
+    $$("csvImportLabel").setValue("Import " + this.grid.count() + " records");
   },
 
-  setMappings: function(fldMappings) {
+  setColumns: function(fldMappings) {
     var cols = {};
     var colSet = (isContacts) ? csvContactColumns : csvVoterColumns;
     colSet.forEach(function(col) {
@@ -178,18 +180,16 @@ var csvGridToolbar = {
   id: "csvGridToolbar",
   height: 35,
   cols: [
-    {view: "label", label: "Spreadsheet Import"},
-    {
-      view: "template",
-      template: '<input id="fileUpload" name="files[]" type="file">'
-    },
+    {view: "label", id: "csvImportLabel"},
     {
       view: "button",
-      value: "Import",
+      value: "Save",
+      width: 100,
       click: function() {
-        csvGridToolbarCtlr.import()
+        csvGridToolbarCtlr.save()
       }
-    }
+    },
+    {}, {}
   ]
 };
 
@@ -201,27 +201,22 @@ var csvGridToolbarCtlr = {
 
   init: function() {
     this.toolbar = $$("csvGridToolbar");
-    document.getElementById("fileUpload").addEventListener(
-        "change", this.fileSelect, false);
   },
 
-  fileSelect: function(e) {
-    var reader = new FileReader();
-    reader.readAsText(e.target.files[0]);
-    reader.onload = (function(fileData) {
-      csvImportPanelCtlr.setData(fileData.target.result);
-    })
-  },
-
-  import: function() {
+  save: function() {
     var data = csvGridCtlr.pull();
     if (!data) return;
 
-    //noinspection JSUnresolvedFunction,JSUnresolvedVariable
-    var url = Flask.url_for("con.csv_import");
+    var url = "";
+    if (isContacts) {
+      url = "con.csv_import";
+    } else {
+      url = "vtr.csv_import";
+    }
 
-    ajaxDao.post(url, data, function(result) {
-      webix.message("Import successful!");
+    //noinspection JSUnresolvedFunction,JSUnresolvedVariable
+    ajaxDao.post(Flask.url_for(url), data, function() {
+      webix.message("Records saved!");
     });
   },
 
@@ -246,8 +241,8 @@ var csvGridPanelCtlr = {
     csvGridCtlr.init();
   },
 
-  load: function(data, mapping) {
-    csvGridCtlr.load(data, mapping);
+  load: function(data, mapping, delimiter) {
+    csvGridCtlr.load(data, mapping, delimiter);
   },
 
   clear: function() {
