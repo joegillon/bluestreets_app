@@ -137,14 +137,35 @@ function missingLocationData(rec) {
 }
 
 function sortAddress(a, b) {
-  var numA = parseInt(a.address);
-  var numB = parseInt(b.address);
-  var stA = a.address.match(/[A-Z A-Z]+/)[0].trim();
-  var stB = b.address.match(/[A-Z A-Z]+/)[0].trim();
-  if (stA == stB)
-    return (numA > numB) ? 1 : -1;
-  else
-    return (stA > stB) ? 1 : -1;
+  if (a.street_name == b.street_name) {
+    if (a.street_type == b.street_type) {
+      if (a.pre_direction == b.pre_direction) {
+        if (a.suf_direction == b.suf_direction) {
+          if (a.house_number == b.house_number) {
+            return unit_sort(a.unit, b.unit);
+          } else {
+            return (a.house_number > b.house_number) ? 1 : -1;
+          }
+        } else {
+          return (a.suf_direction > b.suf_direction) ? 1 : -1;
+        }
+      } else {
+        return (a.pre_direction > b.pre_direction) ? 1 : -1;
+      }
+    } else {
+      return (a.street_type > b.street_type) ? 1 : -1;
+    }
+  } else {
+    return (a.street_name > b.street_name) ? 1 : -1;
+  }
+}
+
+function unit_sort(u1, u2) {
+  var nbr1 = u1.match(/\d+/g);
+  if (nbr1 == "")
+    return (u1 > u2) ? 1 : -1;
+  var nbr2 = u2.match(/\d+/g);
+  return (parseInt(nbr1) > parseInt(nbr2)) ? 1 : -1;
 }
 
 function exportGrid(grid) {

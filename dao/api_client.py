@@ -17,14 +17,9 @@ def get(url):
     print('Error: ', response.status_code)
 
 
-def post(url, json_data):
+def post(url, data):
     url = '%s/%s' % (app.config['API_URL'], url)
-    headers = {'content-type': 'application/json'}
-    response = requests.post(
-        url,
-        headers=headers,
-        data=json.dumps(json_data)
-    )
+    response = requests.post(url, data=data)
     if response.status_code in [200, 304]:
         return json.loads(response.content)
     print('Error: ', response.status_code)

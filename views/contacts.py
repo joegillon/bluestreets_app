@@ -18,6 +18,30 @@ from models.precinct import Precinct
 con = Blueprint('con', __name__, url_prefix='/con')
 
 
+@con.route('/grid', methods=['GET', 'POST'])
+def grid():
+    if request.method == 'GET':
+        precincts = turf_dao.get_precincts()
+        return render_template(
+            'contacts/grid.html',
+            precincts=precincts,
+            title='My Contacts'
+        )
+
+    blocks = json.loads(request.form['params'])
+    if not blocks:
+        contacts = con_dao.get_all()
+    elif len(blocks[0]) == 1 and 'precinct_id' in blocks[0]:
+        contacts = con_dao.get_by_precinct(blocks[0]['precinct_id'])
+    else:
+        dao = Dao(stateful=True)
+        contacts = []
+        for block in blocks:
+            contacts += con_dao.get_by_block(dao, block)
+        dao.close()
+    return jsonify(contacts=to_local_format(contacts))
+
+
 @con.route('/api_import', methods=['GET', 'POST'])
 def api_import():
 
@@ -30,9 +54,16 @@ def api_import():
             data_path=app.config['DATA_PATH']
         )
 
-    url = 'con_api/get_by_block'
-    contacts = api_client.post(url, request.form['params'])['contacts']
-    return jsonify(contacts=to_local_format(contacts))
+    contacts = []
+    blocks = json.loads(request.form['params'])
+    if not blocks:
+        contacts = api_client.get('con_api/all')
+    elif len(blocks[0]) == 1 and 'precinct_id' in blocks[0]:
+        contacts = api_client.get('con_api/pct/%d' % blocks[0]['precinct_id'])
+    else:
+        data = {'blocks': request.form['params']}
+        contacts = api_client.post('con_api/blocks', data)
+    return jsonify(contacts=contacts)
 
 
 def to_local_format(contacts):
@@ -215,7 +246,7 @@ def email_duplicates():
             dup['address'] = str(Address(dup))
 
         return render_template(
-            'con_dups.html',
+            'contacts/dups.html',
             title='Email Duplicates',
             dups=dups,
             cities=cities
@@ -234,7 +265,7 @@ def phone_duplicates():
             dup['address'] = str(Address(dup))
 
         return render_template(
-            'con_dups.html',
+            'contacts/dups.html',
             title='Phone Duplicates',
             dups=dups,
             cities=cities
@@ -253,7 +284,7 @@ def name_addr_duplicates():
             dup['address'] = str(Address(dup))
 
         return render_template(
-            'con_dups.html',
+            'contacts/dups.html',
             title='Name + Address Duplicates',
             dups=dups,
             cities=cities
@@ -272,7 +303,7 @@ def name_duplicates():
             dup['address'] = str(Address(dup))
 
         return render_template(
-            'con_dups.html',
+            'contacts/dups.html',
             title='Name Duplicates',
             dups=dups,
             cities=cities

@@ -83,8 +83,8 @@ var blockListToolbar = {
         },
         {
           view: "button",
-          label: "Import",
-          id: "apiImportBtn"
+          label: "Submit",
+          id: "filterSubmitBtn"
         }
       ]
     },

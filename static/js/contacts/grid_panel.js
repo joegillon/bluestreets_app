@@ -8,9 +8,10 @@ Contact Grid
 var conGrid = {
   view: "datatable",
   id: "conGrid",
-  height: 300,
+  autoheight: true,
   autowidth: true,
   tooltip: true,
+  resizeColumn: true,
   scheme: {
     $init: function(obj) {
       obj.phone1 = phone_prettify(obj.phone1);
@@ -19,13 +20,13 @@ var conGrid = {
   },
   columns: [
     {id: 'id', hidden: true},
-    {id: 'name', header: 'Name', adjust: 'data'},
+    {id: 'name', header: 'Name', adjust: 'data', sort: "string"},
     {id: "nickname", header: "Nickname"},
-    {id: 'address', header: 'Address', adjust: 'data', tooltip: "#city# #zipcode#"},
-    {id: "email", header: "Email"},
+    {id: 'address', header: 'Address', adjust: 'data', sort: sortAddress},
+    {id: "email", header: "Email", sort: "string"},
     {id: "phone1", header: "Phone 1"},
     {id: "phone2", header: "Phone 2"},
-    {id: "gender", header: "Gender"},
+    {id: "gender", header: "Gender", sort: "string"},
     {id: "birth_year", header: "BYr"}
   ]
 };
@@ -38,7 +39,6 @@ var conGridCtlr = {
 
   init: function() {
     this.grid = $$("conGrid");
-    this.load();
   },
 
   clear: function() {

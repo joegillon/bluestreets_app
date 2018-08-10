@@ -3,16 +3,16 @@
  */
 
 /*=====================================================================
-Contact API Import Panel Import View
+Contact Panel Import View
 =====================================================================*/
-var importView = {
-  id: "importView",
+var filterView = {
+  id: "filterView",
   rows: [turfPanel],
   autowidth: true
 };
 
 /*=====================================================================
-Contact API Import Panel Grid View
+Contact Panel Grid View
 =====================================================================*/
 var gridView = {
   id: "gridView",
@@ -21,41 +21,41 @@ var gridView = {
 };
 
 /*=====================================================================
-Contact API Import Panel
+Contact Panel
 =====================================================================*/
-var conApiImportPanel = {
+var conPanel = {
   type: "wide",
   autowidth: true,
   rows: [
     {
       view: "segmented",
-      id: "conApiImportTabBar",
-      value: "importView",
+      id: "conPanelTabBar",
+      value: "filgerView",
       multiview: "true",
       optionWidth: 80,
       align: "center",
       padding: 5,
       options: [
-        {value: "Import", id: "importView"},
+        {value: "Filter", id: "filterView"},
         {value: "Grid", id: "gridView"}
       ]
     },
     {height: 5},
     {
-      cells: [importView, gridView],
+      cells: [filterView, gridView],
       autowidth: true
     }
   ]
 };
 
 /*=====================================================================
-Contact API Import Panel Controller
+Contact Panel Controller
 =====================================================================*/
-var conApiImportPanelCtlr = {
+var conPanelCtlr = {
   init: function() {
     turfPanelCtlr.init();
     conGridPanelCtlr.init();
-    $$("apiImportBtn").attachEvent("onItemClick", this.execute);
+    $$("filterSubmitBtn").attachEvent("onItemClick", this.execute);
     $$("allBtn").show();
   },
 
@@ -80,6 +80,14 @@ var conApiImportPanelCtlr = {
       }
     }
 
+    if (caller == "import") {
+      conPanelCtlr.import(params);
+    } else {
+      conPanelCtlr.showGrid(params);
+    }
+  },
+
+  import: function(params) {
     //noinspection JSUnresolvedVariable,JSUnresolvedFunction
     var url = Flask.url_for("con.api_import");
     ajaxDao.post(url, params, function (response) {
@@ -88,7 +96,20 @@ var conApiImportPanelCtlr = {
       }
       else
         conGridCtlr.load(response["contacts"]);
-      $$("conApiImportTabBar").setValue("gridView");
+      $$("conPanelTabBar").setValue("gridView");
+    })
+  },
+
+  showGrid: function(params) {
+    //noinspection JSUnresolvedVariable,JSUnresolvedFunction
+    var url = Flask.url_for("con.grid");
+    ajaxDao.post(url, params, function (response) {
+      if (response.error) {
+        webix.message({type: "error", text: response.error})
+      }
+      else
+        conGridCtlr.load(response["contacts"]);
+      $$("conPanelTabBar").setValue("gridView");
     })
   }
 };

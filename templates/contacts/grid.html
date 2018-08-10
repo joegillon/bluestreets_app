@@ -1,4 +1,4 @@
-{% extends 'home.html' %}
+{% extends 'layout.html' %}
 
 {% block content %}
   <div id="content_container"></div>
@@ -9,7 +9,9 @@
 
   <script>
     var precincts = {{ precincts|tojson }};
-    var data_path = {{ data_path|tojson }};
+{#    var data_path = {{ data_path|tojson }};#}
+{#    var contacts = {{ contacts|tojson }};#}
+    var caller = "grid";
   </script>
 
   <script src="{{ url_for('static', filename='js/ajax_dao.js') }}"></script>
@@ -18,8 +20,8 @@
   <script src="{{ url_for('static', filename='js/turf/street_panel.js') }}"></script>
   <script src="{{ url_for('static', filename='js/turf/block_panel.js') }}"></script>
   <script src="{{ url_for('static', filename='js/turf/turf_panel.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/voters/grid_panel.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/voters/contact_panel.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/contacts/grid_panel.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/contacts/contact_panel.js') }}"></script>
 
   <script type="text/javascript" charset="utf-8">
 
@@ -27,10 +29,10 @@
 
       webix.ui({
         container: "content_container",
-        rows: [vtrApiImportPanel]
+        rows: [conPanel]
       });
 
-      vtrApiImportPanelCtlr.init();
+      conPanelCtlr.init();
     });
 
   </script>

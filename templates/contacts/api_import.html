@@ -10,6 +10,7 @@
   <script>
     var precincts = {{ precincts|tojson }};
     var data_path = {{ data_path|tojson }};
+    var caller = "import";
   </script>
 
   <script src="{{ url_for('static', filename='js/ajax_dao.js') }}"></script>
@@ -19,7 +20,7 @@
   <script src="{{ url_for('static', filename='js/turf/block_panel.js') }}"></script>
   <script src="{{ url_for('static', filename='js/turf/turf_panel.js') }}"></script>
   <script src="{{ url_for('static', filename='js/contacts/grid_panel.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/contacts/api_import_panel.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/contacts/contact_panel.js') }}"></script>
 
   <script type="text/javascript" charset="utf-8">
 
@@ -27,10 +28,10 @@
 
       webix.ui({
         container: "content_container",
-        rows: [conApiImportPanel]
+        rows: [conPanel]
       });
 
-      conApiImportPanelCtlr.init();
+      conPanelCtlr.init();
     });
 
   </script>

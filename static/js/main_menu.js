@@ -25,6 +25,7 @@ var menu_data = [
     icon: "address-card-o",
     value: "Contacts",
     submenu: [
+      {id: "con_grid", value: "My Contacts"},
       {id: "con_import_api", value: "Import from API"},
       {id: "con_import_csv", value: "Import Spreadsheet"},
       {id: "con_entry", value: "Direct Entry"},
@@ -75,6 +76,11 @@ var mainMenu = {
       if (id == "vtr_import_csv") {
         //noinspection JSUnresolvedVariable,JSUnresolvedFunction
         window.location.href = Flask.url_for('vtr.csv_import');
+        return;
+      }
+      if (id == "con_grid") {
+        //noinspection JSUnresolvedVariable,JSUnresolvedFunction
+        window.location.href = Flask.url_for("con.grid");
         return;
       }
       if (id == "con_import_api") {

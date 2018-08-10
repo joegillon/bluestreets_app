@@ -16,8 +16,8 @@ db_cols = [
 def get_all(dao):
     sql = ("SELECT * FROM contacts "
            "ORDER BY last_name, first_name, middle_name")
-    rex = dao.execute(sql)
-    return [Contact(rec) for rec in rex]
+    return dao.execute(sql)
+    # return [Contact(rec) for rec in rex]
 
 
 @get_dao
@@ -107,11 +107,11 @@ def get_activists(dao):
 def get_by_precinct(dao, precinct_id):
     sql = ("SELECT * FROM contacts "
            "WHERE precinct_id=? "
-           "AND active=1 "
+           # "AND active=1 "
            "ORDER BY last_name, first_name, middle_name;")
     vals = (precinct_id,)
-    rex = dao.execute(sql, vals)
-    return [Contact(rec) for rec in rex] if rex else []
+    return dao.execute(sql, vals)
+    # return [Contact(rec) for rec in rex] if rex else []
 
 
 @get_dao
@@ -124,3 +124,32 @@ def get_by_precinct_list(dao, precinct_list):
     )
     rex = dao.execute(sql, precinct_list)
     return [Contact(rec) for rec in rex] if rex else []
+
+
+@get_dao
+def get_by_block(dao, block):
+    sql = ("SELECT * "
+           "FROM contacts "
+           "WHERE precinct_id=? "
+           "AND street_name=? "
+           "AND street_type=? ")
+    vals = [
+        block['precinct_id'],
+        block['street_name'],
+        block['street_type']
+    ]
+    if block['low_addr']:
+        sql += "AND house_number BETWEEN ? AND ? "
+        vals += [
+            block['low_addr'],
+            block['high_addr']
+        ]
+    if block['odd_even']:
+        if block['odd_even'] == 'O':
+            sql += "AND (house_number % 2)=1 "
+        elif block['odd_even'] == 'E':
+            sql += "AND (house_number % 2)=0 "
+
+    sql += "ORDER BY house_number;"
+
+    return dao.execute(sql, vals)

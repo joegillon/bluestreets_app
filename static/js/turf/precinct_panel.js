@@ -66,7 +66,7 @@ var precinctListToolbar = {
       id: "allBtn",
       width: 50,
       click: function() {
-        conApiImportPanelCtlr.execute();
+        conPanelCtlr.execute();
       }
     },
     {
