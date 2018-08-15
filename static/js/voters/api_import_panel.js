@@ -3,20 +3,38 @@
  */
 
 /*=====================================================================
-Voter API Import Panel Import View
+Voter API Import Panel Filter View
 =====================================================================*/
-var importView = {
-  id: "importView",
+var filterView = {
+  id: "filterView",
   rows: [turfPanel],
   autowidth: true
 };
 
 /*=====================================================================
-Voter API Import Panel Grid View
+Voter API Import Panel Inserts View
 =====================================================================*/
-var gridView = {
-  id: "gridView",
-  rows: [vtrGridPanel],
+var insertsView = {
+  id: "insertsView",
+  rows: [vtrInsertsPanel],
+  autowidth: true
+};
+
+/*=====================================================================
+Voter API Import Panel Conflicts View
+=====================================================================*/
+var conflictsView = {
+  id: "conflictsView",
+  rows: [vtrConflictsPanel],
+  autowidth: true
+};
+
+/*=====================================================================
+Voter API Import Panel Deletes View
+=====================================================================*/
+var deletesView = {
+  id: "deletesView",
+  rows: [vtrDeletesPanel],
   autowidth: true
 };
 
@@ -30,19 +48,21 @@ var vtrApiImportPanel = {
     {
       view: "segmented",
       id: "vtrApiImportTabBar",
-      value: "importView",
+      value: "filterView",
       multiview: "true",
       optionWidth: 80,
       align: "center",
       padding: 5,
       options: [
-        {value: "Import", id: "importView"},
-        {value: "Grid", id: "gridView"}
+        {value: "Filter", id: "filterView"},
+        {value: "New Records", id: "insertsView"},
+        {value: "Conflicts", id: "conflictsView"},
+        {value: "Deletions", id: "deletesView"}
       ]
     },
     {height: 5},
     {
-      cells: [importView, gridView],
+      cells: [filterView, insertsView, conflictsView, deletesView],
       autowidth: true
     }
   ]
@@ -54,8 +74,11 @@ Voter API Import Panel Controller
 var vtrApiImportPanelCtlr = {
   init: function() {
     turfPanelCtlr.init();
-    vtrGridPanelCtlr.init();
-    $$("apiImportBtn").attachEvent("onItemClick", this.execute);
+    vtrInsertsPanelCtlr.init();
+    vtrConflictsPanelCtlr.init();
+    vtrDeletesPanelCtlr.init();
+
+    $$("filterSubmitBtn").attachEvent("onItemClick", this.execute);
     $$("allBtn").show();
   },
 
@@ -87,8 +110,10 @@ var vtrApiImportPanelCtlr = {
         webix.message({type: "error", text: response.error})
       }
       else
-        vtrGridCtlr.load(response["voters"]);
-      $$("vtrApiImportTabBar").setValue("gridView");
+        vtrInsertsGridCtlr.load(response["inserts"]);
+        vtrConflictsGridCtlr.load(response["conflicts"]);
+        vtrDeletesGridCtlr.load(response["deletes"]);
+      $$("vtrApiImportTabBar").setValue("insertsView");
     })
   }
 };

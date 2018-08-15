@@ -76,14 +76,14 @@ class Dao(object):
         self.__cursor.executemany(sql, values)
         self.db.commit()
 
-    def update_many(self, tbl, flds, values):
-        sql = "UPDATE %s SET %s WHERE id=?" % (
-            tbl, '=?,'.join(flds) + '=?')
+    def update_many(self, tbl, key, flds, values):
+        sql = "UPDATE %s SET %s WHERE %s=?" % (
+            tbl, '=?,'.join(flds) + '=?', key)
         self.__cursor.executemany(sql, values)
         self.db.commit()
 
-    def drop_many(self, tbl, ids):
-        sql = "DELETE FROM %s WHERE id IN (%s);" % (tbl, Dao.get_param_str(ids))
+    def drop_many(self, tbl, key, ids):
+        sql = "DELETE FROM %s WHERE %s IN (%s);" % (tbl, key, Dao.get_param_str(ids))
         self.__cursor.execute(sql, ids)
         self.db.commit()
 

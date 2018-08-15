@@ -1,8 +1,8 @@
 from dao.dao import get_dao
 from models.voter import Voter
-from models.address import Address
-from models.person_name import PersonName
-from utils.match import MatchLib
+# from models.address import Address
+# from models.person_name import PersonName
+# from utils.match import MatchLib
 
 
 db_cols = [
@@ -14,6 +14,12 @@ db_cols = [
     'precinct_id', 'voter_id', 'reg_date', 'permanent_absentee',
     'status', 'uocava'
 ]
+
+
+@get_dao
+def get_all(dao):
+    sql = "SELECT * FROM voters"
+    return dao.execute(sql)
 
 
 @get_dao

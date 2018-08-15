@@ -54,7 +54,6 @@ def api_import():
             data_path=app.config['DATA_PATH']
         )
 
-    contacts = []
     blocks = json.loads(request.form['params'])
     if not blocks:
         contacts = api_client.get('con_api/all')

@@ -5,6 +5,7 @@ from flask import current_app as app
 
 import dao.turf_dao as turf_dao
 import dao.api_client as api_client
+from dao.dao import Dao
 import dao.vtr_dao as vtr_dao
 
 from models.voter import Voter
@@ -24,9 +25,21 @@ def api_import():
             data_path=app.config['DATA_PATH']
         )
 
-    url = 'vtr_api/get_by_block'
-    voters = api_client.post(url, request.form['params'])['voters']
-    return jsonify(voters=to_local_format(voters))
+    blocks = json.loads(request.form['params'])
+    if not blocks:
+        voters = api_client.get('vtr_api/all')
+    elif len(blocks[0]) == 1 and 'precinct_id' in blocks[0]:
+        voters = api_client.get('vtr_api/pct/%d' % blocks[0]['precinct_id'])
+    else:
+        data = {'blocks': request.form['params']}
+        voters = api_client.post('vtr_api/blocks', data)
+
+    inserts, conflicts, deletes = filter_api_imports(voters)
+    return jsonify(
+        inserts=inserts,
+        conflicts=conflicts,
+        deletes=deletes
+    )
 
 
 @vtr.route('/csv_import', methods=['GET', 'POST'])
@@ -74,14 +87,66 @@ def to_local_format(voters):
 @vtr.route('/add_many', methods=['POST'])
 def add_many():
     data = json.loads(request.form['params'])
-    data = list(data.values())
-    for rec in data:
-        del rec['address']
-        del rec['name']
+    flds = list(data[0].keys())
+    vals = [list(rec.values()) for rec in data]
+    dao = Dao()
     try:
-        vtr_dao.add_many(data)
+        dao.add_many('voters', flds, vals)
         return jsonify(msg='Records saved!')
     except Exception as ex:
         return jsonify(error=str(ex))
 
+
+@vtr.route('/update_many', methods=['POST'])
+def update_many():
+    data = json.loads(request.form['params'])
+    flds = list(data[0].keys())
+    vals = [list(rec.values()) for rec in data]
+    for i in range(0, len(data)):
+        vals[i].append(data[i]['voter_id'])
+    dao = Dao()
+    try:
+        dao.update_many('voters', 'voter_id', flds, vals)
+        return jsonify(msg='Records saved!')
+    except Exception as ex:
+        return jsonify(error=str(ex))
+
+
+@vtr.route('/drop_many', methods=['POST'])
+def drop_many():
+    data = json.loads(request.form['params'])
+    dao = Dao()
+    try:
+        dao.drop_many('voters', 'voter_id', data)
+        return jsonify(msg='Records dropped!')
+    except Exception as ex:
+        return jsonify(error=str(ex))
+
+
+def filter_api_imports(api_voters):
+    dao = Dao()
+    my_voters = vtr_dao.get_all(dao)
+    my_voters = {v['voter_id']: v for v in my_voters}
+    api_voters = {v['voter_id']: v for v in api_voters}
+    inserts = []
+    conflicts = []
+    deletes = []
+    for api_id, api_voter in api_voters.items():
+        if api_id in my_voters:
+            if has_diff(api_voter, my_voters[api_id]):
+                conflicts.append(api_voter)
+                conflicts.append(my_voters[api_id])
+        else:
+            inserts.append(api_voter)
+    for vid in my_voters.keys():
+        if vid not in api_voters:
+            deletes.append(my_voters[vid])
+    return inserts, conflicts, deletes
+
+
+def has_diff(api_voter, my_voter):
+    for fld in vtr_dao.db_cols:
+        if api_voter[fld] != my_voter[fld]:
+            return True
+    return False
 

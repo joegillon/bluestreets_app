@@ -30,7 +30,7 @@ var conPanel = {
     {
       view: "segmented",
       id: "conPanelTabBar",
-      value: "filgerView",
+      value: "filterView",
       multiview: "true",
       optionWidth: 80,
       align: "center",

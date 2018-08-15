@@ -4,7 +4,7 @@ Voters
 			voters/api_import.html
 				voters/contact_panel.js
 					turf_panel.js
-					voters/grid_panel.js
+					voters/inserts_panel.js
 						vtr.add_many
 	Import Spreadsheet
 		vtr.csv_import
@@ -21,7 +21,7 @@ Contacts
 			contacts/api_import.html
 				contacts/contact_panel.js
 					turf_panel.js
-					contacts/grid_panel.js
+					contacts/inserts_panel.js
 						con.add_many
 	Import Spreadsheet
 		con.csv_import

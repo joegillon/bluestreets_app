@@ -97,22 +97,19 @@ function ajaxSyncGet(url, params, result) {
   });
 }
 
-function wholeName(names) {
-  var result = names.last + ", " + names.first;
-  if (names.middle) {
-    result += " " + names.middle;
-  }
-  if (names.suffix) {
-    result += ", " + names.suffix;
-  }
+function wholeName(d) {
+  var result = d["last_name"] + ", " + d["first_name"];
+  if (d["middle_name"]) result += " " + d["middle_name"];
+  if (d["name_suffix"]) result += ", " + d["name_suffix"];
   return result;
 }
 
-function wholeAddress(addr) {
-  var result = addr.street_address;
-  if (addr.city) {
-    result += ", " + addr.city;
-  }
+function wholeAddress(d) {
+  var result = d["house_number"];
+  if (d["pre_direction"]) result +=  " " + d["pre_direction"];
+  result += " " + d["street_name"] +" " + d["street_type"];
+  if (d["suf_direction"]) result += " " + d["suf_direction"];
+  if (d["unit"]) result += " " + d["unit"];
   return result;
 }
 
@@ -161,10 +158,12 @@ function sortAddress(a, b) {
 }
 
 function unit_sort(u1, u2) {
-  var nbr1 = u1.match(/\d+/g);
-  if (nbr1 == "")
+  var nbr1 = "";
+  if (u1 !== undefined) nbr1 = u1.match(/\d+/g);
+  var nbr2 = "";
+  if (u2 !== undefined) nbr2 = u2.match(/\d+/g);
+  if (nbr1 == "" || nbr2 == "")
     return (u1 > u2) ? 1 : -1;
-  var nbr2 = u2.match(/\d+/g);
   return (parseInt(nbr1) > parseInt(nbr2)) ? 1 : -1;
 }
 

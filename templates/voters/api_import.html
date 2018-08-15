@@ -7,19 +7,22 @@
 {% block scripts %}
   {{ super() }}
 
-  <script>
-    var precincts = {{ precincts|tojson }};
-    var data_path = {{ data_path|tojson }};
-  </script>
-
   <script src="{{ url_for('static', filename='js/ajax_dao.js') }}"></script>
   <script src="{{ url_for('static', filename='js/helpers.js') }}"></script>
   <script src="{{ url_for('static', filename='js/turf/precinct_panel.js') }}"></script>
   <script src="{{ url_for('static', filename='js/turf/street_panel.js') }}"></script>
   <script src="{{ url_for('static', filename='js/turf/block_panel.js') }}"></script>
   <script src="{{ url_for('static', filename='js/turf/turf_panel.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/voters/grid_panel.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/voters/contact_panel.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/voters/inserts_panel.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/voters/conflicts_panel.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/voters/deletes_panel.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/voters/api_import_panel.js') }}"></script>
+
+  <script>
+    var precincts = {{ precincts|tojson }};
+    var data_path = {{ data_path|tojson }};
+    var caller = "import";
+  </script>
 
   <script type="text/javascript" charset="utf-8">
 
