@@ -10,6 +10,11 @@ var skins = [
 
 var menu_data = [
   {
+    id: "neighborhoods",
+    icon: "map",
+    value: "My Neighborhoods"
+  },
+  {
     id: "voter_lists",
     icon: "users",
     value: "Voters",
@@ -68,6 +73,12 @@ var mainMenu = {
   },
   on: {
     onMenuItemClick: function(id) {
+
+      if (id == "neighborhoods") {
+        //noinspection JSUnresolvedVariable,JSUnresolvedFunction
+        window.location.href = Flask.url_for('trf.neighborhoods');
+        return;
+      }
       if (id == "vtr_import_api") {
         //noinspection JSUnresolvedVariable,JSUnresolvedFunction
         window.location.href = Flask.url_for('vtr.api_import');

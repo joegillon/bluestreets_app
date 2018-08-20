@@ -9,7 +9,7 @@ var precinctList = {
   view: "list",
   id: "precinctList",
   width: 250,
-  height: 400,
+  //height: 400,
   select: true,
   template: "#jurisdiction_name#: #ward#: #precinct#"
 };
@@ -60,15 +60,6 @@ var precinctListToolbar = {
   id: "precinctListToolbar",
   height: 35,
   elements: [
-    {
-      view: "button",
-      label: "All",
-      id: "allBtn",
-      width: 50,
-      click: function() {
-        conPanelCtlr.execute();
-      }
-    },
     {
       view: "text",
       id: "precinctFilter",

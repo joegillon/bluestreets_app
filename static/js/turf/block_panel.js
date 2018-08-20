@@ -73,18 +73,6 @@ var blockListToolbar = {
         {
           view: "label",
           label: "Blocks"
-        },
-        {
-          view: "button",
-          label: "Clear",
-          click: function() {
-            blockListToolbarCtlr.clear();
-          }
-        },
-        {
-          view: "button",
-          label: "Submit",
-          id: "filterSubmitBtn"
         }
       ]
     },
@@ -133,9 +121,16 @@ var blockListToolbar = {
         },
         {
           view: "button",
-          label: "Remove",
+          label: "Drop",
           click: function() {
-            blockListCtlr.remove("", "", "");
+            blockListCtlr.remove();
+          }
+        },
+        {
+          view: "button",
+          label: "Clear",
+          click: function() {
+            blockListToolbarCtlr.clear();
           }
         }
       ]

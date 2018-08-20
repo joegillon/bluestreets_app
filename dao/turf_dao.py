@@ -2,22 +2,50 @@ from dao.dao import get_dao
 
 
 @get_dao
-def get_county_name(dao, county_code):
-    sql = "SELECT name FROM counties WHERE code=?"
-    return dao.execute(sql, (county_code, ))
-
-
-@get_dao
-def get_cities(dao):
-    sql = "SELECT * FROM cities;"
+def get_neighborhoods(dao):
+    sql = "SELECT * FROM neighborhoods;"
     return dao.execute(sql)
 
 
 @get_dao
-def get_city_names(dao):
-    sql = "SELECT DISTINCT(name) FROM cities;"
-    rex = dao.execute(sql)
-    return [rec['name'] for rec in rex] if rex else []
+def get_turf_types(dao):
+    sql = "SELECT * FROM neighborhood_type;"
+    return dao.execute(sql)
+
+
+@get_dao
+def get_my_county(dao):
+    sql = "SELECT DISTINCT county_code, county_name FROM precincts"
+    return dao.execute(sql)
+
+
+@get_dao
+def get_jurisdictions(dao):
+    sql = ("SELECT DISTINCT jurisdiction_code, jurisdiction_name "
+           "FROM precincts;")
+    return dao.execute(sql)
+
+
+@get_dao
+def get_wards(dao, jurisdiction_code):
+    sql = ("SELECT DISTINCT(ward) FROM precincts "
+           "WHERE jurisdiction_code=?;")
+    vals = (jurisdiction_code,)
+    return dao.execute(sql, vals)
+
+
+@get_dao
+def get_precincts(dao, jurisdiction_code=None, ward_no=None):
+    sql = "SELECT * FROM precincts "
+    vals = None
+    if jurisdiction_code:
+        sql += " WHERE jurisdiction_code=?"
+        vals = (jurisdiction_code,)
+    if ward_no:
+        sql += " AND ward=?"
+        vals = (jurisdiction_code, ward_no)
+    sql += 'ORDER BY jurisdiction_name, ward, precinct;'
+    return dao.execute(sql, vals)
 
 
 @get_dao
@@ -48,34 +76,6 @@ def get_turf(dao, addr):
         sql += "AND city=? "
         vals.append(addr.city)
 
-    return dao.execute(sql, vals)
-
-
-@get_dao
-def get_jurisdictions(dao):
-    sql = "SELECT * FROM jurisdictions;"
-    return dao.execute(sql)
-
-
-@get_dao
-def get_wards(dao, jurisdiction_code):
-    sql = ("SELECT DISTINCT(ward) FROM precincts "
-           "WHERE jurisdiction_code=?;")
-    vals = (jurisdiction_code,)
-    return dao.execute(sql, vals)
-
-
-@get_dao
-def get_precincts(dao, jurisdiction_code=None, ward_no=None):
-    sql = "SELECT * FROM precincts "
-    vals = None
-    if jurisdiction_code:
-        sql += " WHERE jurisdiction_code=?"
-        vals = (jurisdiction_code,)
-    if ward_no:
-        sql += " AND ward=?"
-        vals = (jurisdiction_code, ward_no)
-    sql += 'ORDER BY jurisdiction_name, ward, precinct;'
     return dao.execute(sql, vals)
 
 
