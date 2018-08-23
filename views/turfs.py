@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, render_template
+from flask import Blueprint, request, jsonify, render_template, json
 
 from dao.dao import Dao
 import dao.turf_dao as turf_dao
@@ -35,6 +35,29 @@ def neighborhoods():
             congressional_districts=congressional_districts,
             neighborhoods=nhoods
         )
+
+    params = json.loads(request.form['params'])
+
+    block_vals = []
+    if params['blocks']:
+        block_vals = [(
+            block['street_name'],
+            block['low_addr'],
+            block['high_addr'],
+            block['odd_even'],
+            block['precinct_id']
+        ) for block in params['blocks']]
+
+    dao = Dao(stateful=True)
+    nbh_id = turf_dao.add_neighborhood(
+        dao,
+        params['type'],
+        params['name'],
+        params['pct_ids'],
+        block_vals
+    )
+    dao.close()
+    return jsonify(nbh_id=nbh_id)
 
 
 def build_wards(precincts):

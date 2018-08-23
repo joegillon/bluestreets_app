@@ -12,8 +12,7 @@ var nbhTypeList = {
   select: true,
   on: {
     onSelectChange: function() {
-      nbhDetailListCtlr.load(this.getSelectedItem().name);
-      return false;
+      nbhPanelCtlr.typeSelected(this.getSelectedItem());
     }
   },
   data: types
@@ -82,8 +81,14 @@ Neighborhood Detail List
 var nbhDetailList = {
   view: "list",
   id: "nbhDetailList",
+  autowidth: true,
   datatype: "jsarray",
-  select: true
+  select: true,
+  on: {
+    onSelectChange: function() {
+      nbhPanelCtlr.detailSelected(this.getSelectedItem());
+    }
+  }
 };
 
 /*=====================================================================
@@ -100,45 +105,11 @@ var nbhDetailListCtlr = {
     this.list.clearAll();
   },
 
-  load: function(nbhType) {
+  load: function(data) {
     this.clear();
-    var lbl = $$("detailLabel");
-    switch (nbhType) {
-      case "County":
-        lbl.setValue("County");
-        this.list.parse([precincts[0].county_name]);
-        break;
-      case "Jurisdiction":
-        lbl.setValue("Jurisdictions");
-        this.list.parse(juris_names);
-        break;
-      case "Ward":
-        lbl.setValue("Wards");
-        this.list.parse(wards);
-        break;
-      case "Precinct":
-        lbl.setValue("Precincts");
-        this.list.parse(pct_names);
-        break;
-      case "State House District":
-        lbl.setValue("State House Districts");
-        this.list.parse(state_house_districts);
-        break;
-      case "State Senate District":
-        lbl.setValue("State Senate Districts");
-        this.list.parse(state_senate_districts);
-        break;
-      case "Congressional District":
-        lbl.setValue("Congressional Districts");
-        this.list.parse(congressional_districts);
-        break;
-      case "Neighborhood":
-        lbl.setValue("Choose Precinct");
-        this.list.parse(pct_names);
-        turfPopupCtlr.show();
-        break;
-    }
+    this.list.parse(data);
   }
+
 };
 
 /*=====================================================================
@@ -155,11 +126,17 @@ var nbhDetailToolbar = {
       label: ""
     },
     {
+      view: "text",
+      id: "nbhNameBox",
+      placeholder: 'Neighborhood Name',
+      width: 200
+    },
+    {
       view: "button",
       label: "Save",
-      width: 100,
+      width: 50,
       click: function() {
-
+        nbhPanelCtlr.save();
       }
     }
   ]
@@ -170,9 +147,21 @@ Neighborhood Detail Toolbar Controller
 =====================================================================*/
 var nbhDetailToolbarCtlr = {
   toolbar: null,
+  label: null,
+  nameBox: null,
 
   init: function() {
     this.toolbar = $$("nbhDetailToolbarCtlr");
+    this.label = $$("detailLabel");
+    this.nameBox = $$("nbhNameBox");
+  },
+
+  setLabel: function(value) {
+    this.label.setValue(value);
+  },
+
+  setName: function(value) {
+    this.nameBox.setValue(value);
   }
 };
 
@@ -203,6 +192,7 @@ var nbhList = {
   view: "list",
   id: "nbhList",
   template: "#name#",
+  select: true,
   data: neighborhoods
 };
 
@@ -214,6 +204,10 @@ var nbhListCtlr = {
 
   init: function() {
     this.list = $$("nbhList");
+  },
+
+  add: function(nbhName) {
+    this.list.add(nbhName);
   }
 };
 
@@ -224,10 +218,19 @@ var nbhListToolbar = {
   view: "toolbar",
   id: "nbhListToolbar",
   height: 35,
+  select: true,
   elements: [
     {
       view: "label",
       label: "My Neighborhoods"
+    },
+    {
+      view: "button",
+      label: "Drop"
+    },
+    {
+      view: "button",
+      label: "Edit"
     }
   ]
 };
@@ -266,18 +269,150 @@ var nbhListPanelCtlr = {
 /*=====================================================================
 Neighborhood Panel
 =====================================================================*/
-var neighborhoodPanel = {
-  height: 300,
+var nbhPanel = {
+  height: 500,
   cols: [nbhTypePanel, nbhDetailPanel, nbhListPanel]
 };
 
 /*=====================================================================
 Neighborhood Panel Controller
 =====================================================================*/
-var neighborhoodPanelCtlr = {
+var nbhPanelCtlr = {
+  selectedType: null,
+  selectedDetail: null,
+  pct_ids: [],
+
   init: function() {
     nbhListPanelCtlr.init();
     nbhDetailPanelCtlr.init();
     nbhTypePanelCtlr.init();
+  },
+
+  typeSelected: function(item) {
+    this.selectedType = item;
+    this.loadDetailList();
+  },
+
+  loadDetailList: function() {
+    var lbl = "";
+    var data = [];
+    switch (this.selectedType.id) {
+      case 1:
+        lbl = "County";
+        data = [precincts[0].county_name];
+        break;
+      case 2:
+        lbl = "Jurisdictions";
+        data = juris_names;
+        break;
+      case 3:
+        lbl = "Wards";
+        data = wards;
+        break;
+      case 4:
+        lbl = "Precincts";
+        data = pct_names;
+        break;
+      case 5:
+        lbl = "State House Districts";
+        data = state_house_districts;
+        break;
+      case 6:
+        lbl = "State Senate Districts";
+        data = state_senate_districts;
+        break;
+      case 7:
+        lbl = "Congressional Districts";
+        data = congressional_districts;
+        break;
+      case 8:
+        lbl = "Choose Precinct";
+        data = pct_names;
+        break;
+    }
+    nbhDetailToolbarCtlr.setLabel(lbl);
+    nbhDetailListCtlr.load(data);
+  },
+
+  detailSelected: function(item) {
+    this.selectedDetail = item;
+    var nbhName = this.selectedDetail.value;
+    var pcts = [];
+    var vars = [];
+
+    switch (this.selectedType.id) {
+      case 1:
+        break;
+      case 2:
+        pcts = pct_db({jurisdiction_name: item.id}).get();
+        break;
+      case 3:
+        vars = item.id.split(",");
+        pcts = pct_db({
+          jurisdiction_name: vars[0],
+          ward: vars[1].trim()
+        }).get();
+        break;
+      case 4:
+        vars = item.id.split(",");
+        pcts = pct_db({
+          jurisdiction_name: vars[0],
+          ward: vars[1].trim(),
+          precinct: vars[2].trim()
+        }).get();
+        break;
+      case 5:
+        nbhName = this.selectedType.name + " " + nbhName;
+        pcts = pct_db({state_house: item.id}).get();
+        break;
+      case 6:
+        nbhName = this.selectedType.name + " " + nbhName;
+        pcts = pct_db({state_senate: item.id}).get();
+        break;
+      case 7:
+        nbhName = this.selectedType.name + " " + nbhName;
+        pcts = pct_db({congress: item.id}).get();
+        break;
+      case 8:
+        vars = item.id.split(",");
+        var jcode = juris_db({jurisdiction_name: vars[0]}).get()[0].jurisdiction_code;
+        var ward = vars[1].trim();
+        var pct = vars[2].trim();
+        var pct_id = pct_db({jurisdiction_code: jcode, ward: ward, precinct: pct}).get()[0].id;
+        turfPopupCtlr.show(jcode, ward, pct, pct_id);
+        break;
+    }
+
+    nbhDetailToolbarCtlr.setName(nbhName);
+
+    this.pct_ids = [];
+    for (var i=0; i<pcts.length; i++) {
+      this.pct_ids.push(pcts[i].id);
+    }
+  },
+
+   save: function() {
+     var params = {
+       type: this.selectedType.id,
+       name: this.selectedDetail.value,
+       pct_ids: this.pct_ids,
+       blocks: blocks
+     };
+
+    //noinspection JSUnresolvedVariable,JSUnresolvedFunction
+    var url = Flask.url_for("trf.neighborhoods");
+    ajaxDao.post(url, params, function (response) {
+      if (response.error) {
+        webix.message({type: "error", text: response.error})
+      }
+      else
+        var nbh = {
+          id: response.nbh_id,
+          type: nbhPanelCtlr.selectedType.id,
+          name: nbhPanelCtlr.selectedDetail.value
+        }
+        nbhListCtlr.add(nbh);
+    })
   }
+
 };

@@ -15,7 +15,7 @@ var turfPopup = {
   head: {
     view: "toolbar",
     cols: [
-      {view: "label", label: "Define Neighborhood"},
+      {view: "label", label: "Neighborhood"},
       {},
       {
         view: "button",
@@ -28,7 +28,7 @@ var turfPopup = {
         view: "button",
         label: "Submit",
         click: function() {
-
+          turfPopupCtlr.submit();
         }
       }
     ]
@@ -51,11 +51,18 @@ var turfPopupCtlr = {
     turfPanelCtlr.init();
   },
 
-  show: function() {
+  show: function(juris_code, ward, pct, pct_id) {
+    streetListCtlr.load(juris_code, ward, pct, pct_id);
     this.popup.show();
   },
 
   hide: function() {
     this.popup.hide();
+  },
+
+  submit: function() {
+    blocks = turfPanelCtlr.getSelections();
+    $$("nbhNameBox").setValue(blocks[0].street_name + ", etc.");
+    this.hide();
   }
 };

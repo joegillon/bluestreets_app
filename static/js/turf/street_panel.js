@@ -11,12 +11,12 @@ var streetList = {
   width: 200,
   height: 400,
   select: true,
-  template: "#street_name# #street_type#"
-  //on: {
-  //  onItemClick: function() {
-  //    blockListToolbarCtlr.clear();
-  //  }
-  //}
+  template: "#street_name# #street_type#",
+  on: {
+    onSelectChange: function() {
+      blockListToolbarCtlr.reset();
+    }
+  }
 };
 
 /*=====================================================================
@@ -24,6 +24,7 @@ Street List Controller
 =====================================================================*/
 var streetListCtlr = {
   list: null,
+  pct_id: null,
 
   init: function() {
     this.list = $$("streetList");
@@ -33,8 +34,11 @@ var streetListCtlr = {
     $$("streetList").clearAll();
   },
 
-  load: function(jurisdiction_code, ward, precinct) {
+  load: function(jurisdiction_code, ward, precinct, pct_id) {
     this.clear();
+    blockListCtlr.clear();
+
+    this.pct_id = pct_id;
 
     //noinspection JSUnresolvedFunction,JSUnresolvedVariable
     var url = Flask.url_for("trf.get_streets", {

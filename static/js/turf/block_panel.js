@@ -29,7 +29,7 @@ var blockListCtlr = {
   },
 
   add: function(low, high, oddEven) {
-    var precinct_id = precinctListCtlr.getSelected().id;
+    var precinct_id = streetListCtlr.pct_id;
     var street = streetListCtlr.getSelected();
     var str = street.street_name + " " + street.street_type;
     var display = str;
@@ -150,10 +150,14 @@ var blockListToolbarCtlr = {
     this.list = $$("blockList");
   },
 
-  clear: function() {
+  reset: function() {
     $$("lowAddr").setValue("");
     $$("hiAddr").setValue("");
     $$("oddEven").setValue("B");
+  },
+
+  clear: function() {
+    this.reset();
     blockListCtlr.clear();
   }
 

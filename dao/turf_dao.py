@@ -105,3 +105,38 @@ def get_house_nums(dao, county_code, jurisdiction, street_name, street_type):
     ]
     return dao.execute(sql, vals)
 
+
+@get_dao
+def add_neighborhood(dao, type, name, pct_ids, blocks):
+    sql = ("INSERT INTO neighborhoods "
+           "(name, type) VALUES (?,?);")
+    vals = (name, type)
+    nbh_id = dao.execute(sql, vals)
+
+    if pct_ids:
+        add_nbh_precincts(dao, nbh_id, pct_ids)
+
+    if blocks:
+        add_blocks(dao, nbh_id, blocks)
+
+    return nbh_id
+
+@get_dao
+def add_nbh_precincts(dao, nbh_id, pct_ids):
+    flds = ['neighborhood_id', 'precinct_id']
+    vals = [(nbh_id, pct_id) for pct_id in pct_ids]
+    dao.add_many('neighborhood_precincts', flds, vals)
+
+
+@get_dao
+def add_blocks(dao, nbh_id, vals):
+    flds = [
+        'street_name',
+        'low_addr',
+        'high_addr',
+        'odd_even',
+        'precinct_id',
+        'neighborhood_id'
+    ]
+    vals = [val + (nbh_id,) for val in vals]
+    dao.add_many('blocks', flds, vals)
