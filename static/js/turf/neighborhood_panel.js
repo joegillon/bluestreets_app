@@ -3,8 +3,28 @@
  */
 
 /*=====================================================================
-Neighborhood Type List
+Neighborhood Type Panel
 =====================================================================*/
+var nbhTypeToolbar = {
+  view: "toolbar",
+  id: "nbhTypeToolbar",
+  height: 35,
+  elements: [
+    {
+      view: "label",
+      label: "Types"
+    }
+  ]
+};
+
+var nbhTypeToolbarCtlr = {
+  toolbar: null,
+
+  init: function() {
+    this.toolbar = $$("nbhTypeToolbar");
+  }
+};
+
 var nbhTypeList = {
   view: "list",
   id: "nbhTypeList",
@@ -18,9 +38,6 @@ var nbhTypeList = {
   data: types
 };
 
-/*=====================================================================
-Neighborhood Type List Controller
-=====================================================================*/
 var nbhTypeListCtlr = {
   list: null,
 
@@ -29,43 +46,11 @@ var nbhTypeListCtlr = {
   }
 };
 
-/*=====================================================================
-Neighborhood Type List Toolbar
-=====================================================================*/
-var nbhTypeToolbar = {
-  view: "toolbar",
-  id: "nbhTypeListToolbar",
-  height: 35,
-  elements: [
-    {
-      view: "label",
-      label: "Types"
-    }
-  ]
-};
-
-/*=====================================================================
-Neighborhood Type List Toolbar Controller
-=====================================================================*/
-var nbhTypeToolbarCtlr = {
-  toolbar: null,
-
-  init: function() {
-    this.toolbar = $$("nbhTypeToolbar");
-  }
-};
-
-/*=====================================================================
-Neighborhood Type Panel
-=====================================================================*/
 var nbhTypePanel = {
   width: 200,
   rows: [nbhTypeToolbar, nbhTypeList]
 };
 
-/*=====================================================================
-Neighborhood Type Panel Controller
-=====================================================================*/
 var nbhTypePanelCtlr = {
   init: function() {
     nbhTypeToolbarCtlr.init();
@@ -73,47 +58,8 @@ var nbhTypePanelCtlr = {
   }
 };
 
-/*********************************************************************/
-
 /*=====================================================================
-Neighborhood Detail List
-=====================================================================*/
-var nbhDetailList = {
-  view: "list",
-  id: "nbhDetailList",
-  autowidth: true,
-  datatype: "jsarray",
-  select: true,
-  on: {
-    onSelectChange: function() {
-      nbhPanelCtlr.detailSelected(this.getSelectedItem());
-    }
-  }
-};
-
-/*=====================================================================
-Neighborhood Detail List Controller
-=====================================================================*/
-var nbhDetailListCtlr = {
-  list: null,
-
-  init: function() {
-    this.list = $$("nbhDetailList");
-  },
-
-  clear: function() {
-    this.list.clearAll();
-  },
-
-  load: function(data) {
-    this.clear();
-    this.list.parse(data);
-  }
-
-};
-
-/*=====================================================================
-Neighborhood Detail Toolbar
+Neighborhood Detail Panel
 =====================================================================*/
 var nbhDetailToolbar = {
   view: "toolbar",
@@ -129,7 +75,12 @@ var nbhDetailToolbar = {
       view: "text",
       id: "nbhNameBox",
       placeholder: 'Neighborhood Name',
-      width: 200
+      width: 200,
+      on: {
+        onChange: function(newv) {
+          nbhPanelCtlr.nbhName = newv;
+       }
+      }
     },
     {
       view: "button",
@@ -142,9 +93,6 @@ var nbhDetailToolbar = {
   ]
 };
 
-/*=====================================================================
-Neighborhood Detail Toolbar Controller
-=====================================================================*/
 var nbhDetailToolbarCtlr = {
   toolbar: null,
   label: null,
@@ -165,16 +113,41 @@ var nbhDetailToolbarCtlr = {
   }
 };
 
-/*=====================================================================
-Neighborhood Detail Panel
-=====================================================================*/
+var nbhDetailList = {
+  view: "list",
+  id: "nbhDetailList",
+  autowidth: true,
+  datatype: "jsarray",
+  select: true,
+  on: {
+    onSelectChange: function() {
+      nbhPanelCtlr.detailSelected(this.getSelectedItem());
+    }
+  }
+};
+
+var nbhDetailListCtlr = {
+  list: null,
+
+  init: function() {
+    this.list = $$("nbhDetailList");
+  },
+
+  clear: function() {
+    this.list.clearAll();
+  },
+
+  load: function(data) {
+    this.clear();
+    this.list.parse(data);
+  }
+
+};
+
 var nbhDetailPanel = {
   rows: [nbhDetailToolbar, nbhDetailList]
 };
 
-/*=====================================================================
-Neighborhood Detail Panel Controller
-=====================================================================*/
 var nbhDetailPanelCtlr = {
 
   init: function() {
@@ -183,36 +156,8 @@ var nbhDetailPanelCtlr = {
   }
 };
 
-/*********************************************************************/
-
 /*=====================================================================
-Neighborhood List
-=====================================================================*/
-var nbhList = {
-  view: "list",
-  id: "nbhList",
-  template: "#name#",
-  select: true,
-  data: neighborhoods
-};
-
-/*=====================================================================
-Neighborhood List Controller
-=====================================================================*/
-var nbhListCtlr = {
-  list: null,
-
-  init: function() {
-    this.list = $$("nbhList");
-  },
-
-  add: function(nbhName) {
-    this.list.add(nbhName);
-  }
-};
-
-/*=====================================================================
-Neighborhood List Toolbar
+Neighborhood List Panel
 =====================================================================*/
 var nbhListToolbar = {
   view: "toolbar",
@@ -222,22 +167,18 @@ var nbhListToolbar = {
   elements: [
     {
       view: "label",
-      label: "My Neighborhoods"
+      label: "My Turf"
     },
     {
       view: "button",
-      label: "Drop"
-    },
-    {
-      view: "button",
-      label: "Edit"
+      label: "Drop",
+      click: function() {
+        nbhListCtlr.drop(nbhListCtlr.selection().id);
+      }
     }
   ]
 };
 
-/*=====================================================================
-Neighborhood List Toolbar Controller
-=====================================================================*/
 var nbhListToolbarCtlr = {
   toolbar: null,
 
@@ -246,17 +187,76 @@ var nbhListToolbarCtlr = {
   }
 };
 
-/*=====================================================================
-Neighborhood List Panel
-=====================================================================*/
+var nbhList = {
+  view: "editlist",
+  id: "nbhList",
+  template: "#name#",
+  select: true,
+  editable: true,
+  editaction: "dblclick",
+  editor: "text",
+  editValue: "name",
+  data: neighborhoods,
+  on: {
+    onAfterEditStop: function(state, editor) {
+      if (state.old != state.value) {
+        nbhListCtlr.edit(editor.id, state.value);
+      }
+    }
+  }
+};
+
+var nbhListCtlr = {
+  list: null,
+
+  init: function() {
+    this.list = $$("nbhList");
+  },
+
+  add: function(nbhName) {
+    this.list.add(nbhName);
+  },
+
+  selection: function() {
+    return this.list.getSelectedItem();
+  },
+
+  edit: function(id, name) {
+    var params = {
+      id: id, name: name
+    } ;
+
+    //noinspection JSUnresolvedVariable,JSUnresolvedFunction
+    var url = Flask.url_for("trf.neighborhood_name");
+    ajaxDao.post(url, params, function (response) {
+      if (response.error) {
+        webix.message({type: "error", text: response.error});
+      }  else {
+        webix.message(response.msg);
+      }
+    })
+  },
+
+  drop: function(id) {
+      //noinspection JSUnresolvedVariable,JSUnresolvedFunction
+    var url = Flask.url_for("trf.neighborhood_drop");
+    ajaxDao.post(url, {id: id}, function (response) {
+      if (response.error) {
+        webix.message({type: "error", text: response.error});
+      }  else {
+        $$("nbhList").remove(id);
+        webix.message(response.msg);
+      }
+    })
+
+  }
+};
+
 var nbhListPanel = {
   width: 200,
   rows: [nbhListToolbar, nbhList]
 };
 
-/*=====================================================================
-Neighborhood List Panel Controller
-=====================================================================*/
 var nbhListPanelCtlr = {
   init: function() {
     nbhListToolbarCtlr.init();
@@ -264,13 +264,11 @@ var nbhListPanelCtlr = {
   }
 };
 
-/*********************************************************************/
-
 /*=====================================================================
 Neighborhood Panel
 =====================================================================*/
 var nbhPanel = {
-  height: 500,
+  height: 400,
   cols: [nbhTypePanel, nbhDetailPanel, nbhListPanel]
 };
 
@@ -279,7 +277,7 @@ Neighborhood Panel Controller
 =====================================================================*/
 var nbhPanelCtlr = {
   selectedType: null,
-  selectedDetail: null,
+  nbhName: "",
   pct_ids: [],
 
   init: function() {
@@ -335,8 +333,7 @@ var nbhPanelCtlr = {
   },
 
   detailSelected: function(item) {
-    this.selectedDetail = item;
-    var nbhName = this.selectedDetail.value;
+    this.nbhName = item.value;
     var pcts = [];
     var vars = [];
 
@@ -383,7 +380,7 @@ var nbhPanelCtlr = {
         break;
     }
 
-    nbhDetailToolbarCtlr.setName(nbhName);
+    nbhDetailToolbarCtlr.setName(this.nbhName);
 
     this.pct_ids = [];
     for (var i=0; i<pcts.length; i++) {
@@ -391,27 +388,27 @@ var nbhPanelCtlr = {
     }
   },
 
-   save: function() {
-     var params = {
-       type: this.selectedType.id,
-       name: this.selectedDetail.value,
-       pct_ids: this.pct_ids,
-       blocks: blocks
-     };
+  save: function() {
+    var params = {
+      type: this.selectedType.id,
+      name: this.nbhName,
+      pct_ids: this.pct_ids,
+      blocks: blocks
+    };
 
     //noinspection JSUnresolvedVariable,JSUnresolvedFunction
     var url = Flask.url_for("trf.neighborhoods");
     ajaxDao.post(url, params, function (response) {
       if (response.error) {
         webix.message({type: "error", text: response.error})
-      }
-      else
+      }  else {
         var nbh = {
           id: response.nbh_id,
           type: nbhPanelCtlr.selectedType.id,
-          name: nbhPanelCtlr.selectedDetail.value
-        }
+          name: nbhPanelCtlr.nbhName
+        };
         nbhListCtlr.add(nbh);
+      }
     })
   }
 

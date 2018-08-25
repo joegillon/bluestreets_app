@@ -121,6 +121,25 @@ def add_neighborhood(dao, type, name, pct_ids, blocks):
 
     return nbh_id
 
+
+@get_dao
+def neighborhood_name(dao, id, name):
+    sql = "UPDATE neighborhoods SET name=? WHERE id=?"
+    result = dao.execute(sql, (name, id))
+    if result != 1:
+        raise Exception('Unexpected update error!')
+
+
+@get_dao
+def neighborhood_drop(dao, id):
+    sqls = [
+        "DELETE FROM blocks WHERE neighborhood_id=%s" % (id,),
+        "DELETE FROM neighborhood_precincts WHERE neighborhood_id=%s" % (id,),
+        "DELETE FROM neighborhoods WHERE id=%s" % (id,)
+    ]
+    dao.transaction(sqls)
+
+
 @get_dao
 def add_nbh_precincts(dao, nbh_id, pct_ids):
     flds = ['neighborhood_id', 'precinct_id']

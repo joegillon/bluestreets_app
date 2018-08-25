@@ -60,6 +60,30 @@ def neighborhoods():
     return jsonify(nbh_id=nbh_id)
 
 
+@trf.route('/neighborhood_name', methods=['POST'])
+def neighborhood_name():
+    params = json.loads(request.form['params'])
+    dao = Dao()
+    try:
+        turf_dao.neighborhood_name(dao, params['id'], params['name'])
+        return jsonify(msg='Name changed!')
+    except Exception as ex:
+        return jsonify(error=str(ex))
+
+
+@trf.route('/neighborhood_drop', methods=['POST'])
+def neighborhood_drop():
+    params = json.loads(request.form['params'])
+    dao = Dao(stateful=True)
+    try:
+        turf_dao.neighborhood_drop(dao, params['id'])
+        return jsonify(msg='Neighborhood dropped!')
+    except Exception as ex:
+        return jsonify(error=str(ex))
+    finally:
+        dao.close()
+
+
 def build_wards(precincts):
     wards = []
     for p in precincts:

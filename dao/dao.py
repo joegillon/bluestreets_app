@@ -103,10 +103,9 @@ class Dao(object):
             for sql in sqls:
                 self.__cursor.execute(sql)
             self.__cursor.execute('COMMIT')
-            return True
-        except self.db.error:
+        except self.db.Error:
             self.__cursor.execute('ROLLBACK')
-            return False
+            raise Exception(str(self.db.Error))
 
 
 def get_dao(f):
