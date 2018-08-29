@@ -5,11 +5,11 @@
 /*=====================================================================
 Voter API Import Panel Filter View
 =====================================================================*/
-var filterView = {
-  id: "filterView",
-  rows: [turfPanel],
-  autowidth: true
-};
+//var filterView = {
+//  id: "filterView",
+//  rows: [nbhListPanel],
+//  autowidth: true
+//};
 
 /*=====================================================================
 Voter API Import Panel Inserts View
@@ -39,22 +39,19 @@ var deletesView = {
 };
 
 /*=====================================================================
-Voter API Import Panel
+Voter API Import Tab Panel
 =====================================================================*/
-var vtrApiImportPanel = {
-  type: "wide",
-  autowidth: true,
+var vtrApiImportTabPanel = {
   rows: [
     {
       view: "segmented",
       id: "vtrApiImportTabBar",
-      value: "filterView",
+      value: "insertsView",
       multiview: "true",
       optionWidth: 80,
       align: "center",
       padding: 5,
       options: [
-        {value: "Filter", id: "filterView"},
         {value: "New Records", id: "insertsView"},
         {value: "Conflicts", id: "conflictsView"},
         {value: "Deletions", id: "deletesView"}
@@ -62,10 +59,19 @@ var vtrApiImportPanel = {
     },
     {height: 5},
     {
-      cells: [filterView, insertsView, conflictsView, deletesView],
+      cells: [insertsView, conflictsView, deletesView],
       autowidth: true
     }
   ]
+};
+
+/*=====================================================================
+Voter API Import Panel
+=====================================================================*/
+var vtrApiImportPanel = {
+  type: "wide",
+  autowidth: true,
+  cols: [nbhListPanel, vtrApiImportTabPanel]
 };
 
 /*=====================================================================
@@ -73,35 +79,39 @@ Voter API Import Panel Controller
 =====================================================================*/
 var vtrApiImportPanelCtlr = {
   init: function() {
-    turfPanelCtlr.init();
+    nbhListPanelCtlr.init();
     vtrInsertsPanelCtlr.init();
     vtrConflictsPanelCtlr.init();
     vtrDeletesPanelCtlr.init();
 
-    $$("filterSubmitBtn").attachEvent("onItemClick", this.execute);
-    $$("allBtn").show();
+    nbhListCtlr.load(neighborhoods);
+    //$$("filterSubmitBtn").attachEvent("onItemClick", this.execute);
+    //$$("allBtn").show();
   },
 
   execute: function() {
-    var blocks = turfPanelCtlr.getSelections();
+    var nbhs = nbhListCtlr.selection();
     var params = [];
-    if (blocks.length == 0) {
-      var pct = precinctListCtlr.getSelected();
-      if (pct !== undefined) {
-        params.push({precinct_id: pct["id"]});
-      }
-    } else {
-      for (var i = 0; i < blocks.length; i++) {
-        params.push({
-          precinct_id: blocks[i]['precinct_id'],
-          street_name: blocks[i]['street_name'],
-          street_type: blocks[i]['street_type'],
-          low_addr: blocks[i]['low_addr'],
-          high_addr: blocks[i]['high_addr'],
-          odd_even: blocks[i]['odd_even']
-        })
-      }
+    for (var i=0; i<nbhs.length; i++) {
+      params.push({id: nbhs[i].id, type: nbhs[i].type});
     }
+    //if (blocks.length == 0) {
+    //  var pct = precinctListCtlr.getSelected();
+    //  if (pct !== undefined) {
+    //    params.push({precinct_id: pct["id"]});
+    //  }
+    //} else {
+    //  for (var i = 0; i < blocks.length; i++) {
+    //    params.push({
+    //      precinct_id: blocks[i]['precinct_id'],
+    //      street_name: blocks[i]['street_name'],
+    //      street_type: blocks[i]['street_type'],
+    //      low_addr: blocks[i]['low_addr'],
+    //      high_addr: blocks[i]['high_addr'],
+    //      odd_even: blocks[i]['odd_even']
+    //    })
+    //  }
+    //}
 
     //noinspection JSUnresolvedVariable,JSUnresolvedFunction
     var url = Flask.url_for("vtr.api_import");

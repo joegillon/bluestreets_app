@@ -159,3 +159,17 @@ def add_blocks(dao, nbh_id, vals):
     ]
     vals = [val + (nbh_id,) for val in vals]
     dao.add_many('blocks', flds, vals)
+
+
+@get_dao
+def get_blocks(dao, nbh_id):
+    sql = ("SELECT precinct_id, street_name, street_type, low_addr, high_addr, odd_even "
+           " FROM blocks  WHERE neighborhood_id=?")
+    return dao.execute(sql, (nbh_id,))
+
+
+@get_dao
+def get_neighborhood_precincts(dao, nbh_id):
+    sql = ("SELECT precinct_id FROM neighborhood_precincts "
+           "WHERE neighborhood_id=?")
+    return dao.execute(sql, (nbh_id,))

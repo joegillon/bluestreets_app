@@ -18,23 +18,30 @@ def api_import():
 
     if request.method == 'GET':
         precincts = turf_dao.get_precincts()
+        neighborhoods = turf_dao.get_neighborhoods()
         return render_template(
             'voters/api_import.html',
             title='Voter Import',
             precincts=precincts,
+            neighborhoods=neighborhoods,
             data_path=app.config['DATA_PATH']
         )
 
-    blocks = json.loads(request.form['params'])
-    if not blocks:
-        voters = api_client.get('vtr_api/all')
-    elif len(blocks[0]) == 1 and 'precinct_id' in blocks[0]:
-        voters = api_client.get('vtr_api/pct/%d' % blocks[0]['precinct_id'])
-    else:
-        data = {'blocks': request.form['params']}
-        voters = api_client.post('vtr_api/blocks', data)
+    nbhs = json.loads(request.form['params'])
+    pcts = []
+    blocks = []
+    for n in nbhs:
+        if n['type'] == 8:
+            blocks += turf_dao.get_blocks(n['id'])
+        else:
+            pcts = turf_dao.get_neighborhood_precincts(n['id'])
+    voters = []
+    for pct in pcts:
+        voters += api_client.get('vtr_api/pct/%s' % (pct['precinct_id'],))
+    if blocks:
+        voters += api_client.post('vtr_api/blocks', {'blocks': json.dumps(blocks)})
 
-    inserts, conflicts, deletes = filter_api_imports(voters)
+    inserts, conflicts, deletes = filter_api_imports(voters, [n['id'] for n in nbhs])
     return jsonify(
         inserts=inserts,
         conflicts=conflicts,
@@ -123,9 +130,9 @@ def drop_many():
         return jsonify(error=str(ex))
 
 
-def filter_api_imports(api_voters):
+def filter_api_imports(api_voters, nbh_ids):
     dao = Dao()
-    my_voters = vtr_dao.get_all(dao)
+    my_voters = vtr_dao.get_for_neighborhoods(dao, nbh_ids)
     my_voters = {v['voter_id']: v for v in my_voters}
     api_voters = {v['voter_id']: v for v in api_voters}
     inserts = []

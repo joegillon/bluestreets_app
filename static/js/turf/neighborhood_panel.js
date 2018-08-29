@@ -159,9 +159,9 @@ var nbhDetailPanelCtlr = {
 /*=====================================================================
 Neighborhood List Panel
 =====================================================================*/
-var nbhListToolbar = {
+var nbhEditListToolbar = {
   view: "toolbar",
-  id: "nbhListToolbar",
+  id: "nbhEditListToolbar",
   height: 35,
   select: true,
   elements: [
@@ -173,23 +173,23 @@ var nbhListToolbar = {
       view: "button",
       label: "Drop",
       click: function() {
-        nbhListCtlr.drop(nbhListCtlr.selection().id);
+        nbhEditListCtlr.drop(nbhEditListCtlr.selection().id);
       }
     }
   ]
 };
 
-var nbhListToolbarCtlr = {
+var nbhEditListToolbarCtlr = {
   toolbar: null,
 
   init: function() {
-    this.toolbar = $$("nbhListToolbar");
+    this.toolbar = $$("nbhEditListToolbar");
   }
 };
 
-var nbhList = {
+var nbhEditList = {
   view: "editlist",
-  id: "nbhList",
+  id: "nbhEditList",
   template: "#name#",
   select: true,
   editable: true,
@@ -200,17 +200,17 @@ var nbhList = {
   on: {
     onAfterEditStop: function(state, editor) {
       if (state.old != state.value) {
-        nbhListCtlr.edit(editor.id, state.value);
+        nbhEditListCtlr.edit(editor.id, state.value);
       }
     }
   }
 };
 
-var nbhListCtlr = {
+var nbhEditListCtlr = {
   list: null,
 
   init: function() {
-    this.list = $$("nbhList");
+    this.list = $$("nbhEditList");
   },
 
   add: function(nbhName) {
@@ -244,7 +244,7 @@ var nbhListCtlr = {
       if (response.error) {
         webix.message({type: "error", text: response.error});
       }  else {
-        $$("nbhList").remove(id);
+        $$("nbhEditList").remove(id);
         webix.message(response.msg);
       }
     })
@@ -252,15 +252,15 @@ var nbhListCtlr = {
   }
 };
 
-var nbhListPanel = {
+var nbhEditListPanel = {
   width: 200,
-  rows: [nbhListToolbar, nbhList]
+  rows: [nbhEditListToolbar, nbhEditList]
 };
 
-var nbhListPanelCtlr = {
+var nbhEditListPanelCtlr = {
   init: function() {
-    nbhListToolbarCtlr.init();
-    nbhListCtlr.init();
+    nbhEditListToolbarCtlr.init();
+    nbhEditListCtlr.init();
   }
 };
 
@@ -269,7 +269,7 @@ Neighborhood Panel
 =====================================================================*/
 var nbhPanel = {
   height: 400,
-  cols: [nbhTypePanel, nbhDetailPanel, nbhListPanel]
+  cols: [nbhTypePanel, nbhDetailPanel, nbhEditListPanel]
 };
 
 /*=====================================================================
@@ -281,7 +281,7 @@ var nbhPanelCtlr = {
   pct_ids: [],
 
   init: function() {
-    nbhListPanelCtlr.init();
+    nbhEditListPanelCtlr.init();
     nbhDetailPanelCtlr.init();
     nbhTypePanelCtlr.init();
   },
@@ -407,7 +407,7 @@ var nbhPanelCtlr = {
           type: nbhPanelCtlr.selectedType.id,
           name: nbhPanelCtlr.nbhName
         };
-        nbhListCtlr.add(nbh);
+        nbhEditListCtlr.add(nbh);
       }
     })
   }

@@ -1,6 +1,6 @@
 import requests
 import json
-from flask import current_app as app
+from flask import current_app as app, jsonify
 
 
 headers = {

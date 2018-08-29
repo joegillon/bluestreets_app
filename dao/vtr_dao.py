@@ -12,7 +12,7 @@ db_cols = [
     'house_number', 'pre_direction', 'street_name', 'street_type',
     'suf_direction', 'unit', 'street_name_meta', 'city', 'zipcode',
     'precinct_id', 'voter_id', 'reg_date', 'permanent_absentee',
-    'status', 'uocava'
+    'status', 'uocava', 'party', 'comment', 'neighborhood_id'
 ]
 
 
@@ -20,6 +20,13 @@ db_cols = [
 def get_all(dao):
     sql = "SELECT * FROM voters"
     return dao.execute(sql)
+
+
+@get_dao
+def get_for_neighborhoods(dao, nbh_ids):
+    sql = ("SELECT * FROM voters "
+           "WHERE neighborhood_id IN (%s);") % dao.get_param_str(nbh_ids)
+    return dao.execute(sql, nbh_ids)
 
 
 @get_dao
