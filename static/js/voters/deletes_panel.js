@@ -2,9 +2,64 @@
  * Created by Joe on 6/15/2017.
  */
 
-/*=====================================================================
-Voter Deletes Grid
-=====================================================================*/
+/*==================================================
+Voter Deletes Panel
+==================================================*/
+var vtrDeletesToolbar = {
+  view: "toolbar",
+  id: "vtrDeletesToolbar",
+  height: 35,
+  paddingY: 2,
+  cols: [
+    {
+      view: "label",
+      label: "Removed Voter Records"
+    },
+    {
+      view: "search",
+      id: "vtrDeletesFilter",
+      placeholder: "Search...",
+      width: 150,
+      on: {
+        onTimedKeyPress: function() {
+          vtrDeletesGridCtlr.filter(this.getValue());
+        }
+      }
+    },
+    {
+      view: "button",
+      width: 100,
+      label: "Save",
+      click: "vtrDeletesToolbarCtlr.save();"
+    },
+    {}
+  ]
+};
+
+var vtrDeletesToolbarCtlr = {
+  toolbar: null,
+  csvFile: null,
+
+  init: function() {
+    this.toolbar = $$("vtrDeletesToolbar");
+  },
+
+  save: function() {
+    var data = vtrDeletesGridCtlr.getData();
+    if (data === undefined) return;
+
+    //noinspection JSUnresolvedVariable,JSUnresolvedFunction
+    var url = Flask.url_for("vtr.drop_many");
+
+    ajaxDao.post(url, data, function() {
+      webix.message("Records saved!");
+    })
+  }
+
+};
+
+/******************************************************************************/
+
 var vtrDeletesGrid = {
   view: "datatable",
   id: "vtrDeletesGrid",
@@ -43,9 +98,6 @@ var vtrDeletesGrid = {
   }
 };
 
-/*=====================================================================
-Voter Deletes Grid Controller
-=====================================================================*/
 var vtrDeletesGridCtlr = {
   grid: null,
   saves: [],
@@ -93,75 +145,12 @@ var vtrDeletesGridCtlr = {
   }
 };
 
-/*=====================================================================
-Voter Deletes Toolbar
-=====================================================================*/
-var vtrDeletesToolbar = {
-  view: "toolbar",
-  id: "vtrDeletesToolbar",
-  height: 35,
-  paddingY: 2,
-  cols: [
-    {
-      view: "label",
-      label: "Removed Voter Records"
-    },
-    {
-      view: "search",
-      id: "vtrDeletesFilter",
-      placeholder: "Search...",
-      width: 150,
-      on: {
-        onTimedKeyPress: function() {
-          vtrDeletesGridCtlr.filter(this.getValue());
-        }
-      }
-    },
-    {
-      view: "button",
-      width: 100,
-      label: "Save",
-      click: "vtrDeletesToolbarCtlr.save();"
-    },
-    {}
-  ]
-};
+/******************************************************************************/
 
-/*=====================================================================
-Voter Deletes Toolbar Controller
-=====================================================================*/
-var vtrDeletesToolbarCtlr = {
-  toolbar: null,
-  csvFile: null,
-
-  init: function() {
-    this.toolbar = $$("vtrDeletesToolbar");
-  },
-
-  save: function() {
-    var data = vtrDeletesGridCtlr.getData();
-    if (data === undefined) return;
-
-    //noinspection JSUnresolvedVariable,JSUnresolvedFunction
-    var url = Flask.url_for("vtr.drop_many");
-
-    ajaxDao.post(url, data, function() {
-      webix.message("Records saved!");
-    })
-  },
-
-};
-
-/*=====================================================================
-Voter Deletes Panel
-=====================================================================*/
 var vtrDeletesPanel = {
   rows: [vtrDeletesToolbar, vtrDeletesGrid]
 };
 
-/*=====================================================================
-Voter Deletes Panel Controller
-=====================================================================*/
 var vtrDeletesPanelCtlr = {
   init: function() {
     vtrDeletesToolbarCtlr.init();

@@ -2,9 +2,64 @@
  * Created by Joe on 6/15/2017.
  */
 
-/*=====================================================================
-Voter Inserts Grid
-=====================================================================*/
+/*==================================================
+Voter Inserts Panel
+==================================================*/
+var vtrInsertsToolbar = {
+  view: "toolbar",
+  id: "vtrInsertsToolbar",
+  height: 35,
+  paddingY: 2,
+  cols: [
+    {
+      view: "label",
+      label: "New Voter Records"
+    },
+    {
+      view: "search",
+      id: "vtrInsertsFilter",
+      placeholder: "Search...",
+      width: 150,
+      on: {
+        onTimedKeyPress: function() {
+          vtrInsertsGridCtlr.filter(this.getValue());
+        }
+      }
+    },
+    {
+      view: "button",
+      width: 100,
+      label: "Save",
+      click: "vtrInsertsToolbarCtlr.save();"
+    },
+    {}
+  ]
+};
+
+var vtrInsertsToolbarCtlr = {
+  toolbar: null,
+  csvFile: null,
+
+  init: function() {
+    this.toolbar = $$("vtrInsertsToolbar");
+  },
+
+  save: function() {
+    var data = vtrInsertsGridCtlr.getData();
+    if (data === undefined) return;
+
+    //noinspection JSUnresolvedVariable,JSUnresolvedFunction
+    var url = Flask.url_for("vtr.add_many");
+
+    ajaxDao.post(url, data, function() {
+      webix.message("Records saved!");
+    })
+  }
+
+};
+
+/******************************************************************************/
+
 var vtrInsertsGrid = {
   view: "datatable",
   id: "vtrInsertsGrid",
@@ -43,9 +98,6 @@ var vtrInsertsGrid = {
   }
 };
 
-/*=====================================================================
-Voter Inserts Grid Controller
-=====================================================================*/
 var vtrInsertsGridCtlr = {
   grid: null,
   saves: [],
@@ -94,78 +146,14 @@ var vtrInsertsGridCtlr = {
     } else {
       this.saves.pop(rowId);
     }
-  }
-};
+  }};
 
-/*=====================================================================
-Voter Inserts Toolbar
-=====================================================================*/
-var vtrInsertsToolbar = {
-  view: "toolbar",
-  id: "vtrInsertsToolbar",
-  height: 35,
-  paddingY: 2,
-  cols: [
-    {
-      view: "label",
-      label: "New Voter Records"
-    },
-    {
-      view: "search",
-      id: "vtrInsertsFilter",
-      placeholder: "Search...",
-      width: 150,
-      on: {
-        onTimedKeyPress: function() {
-          vtrInsertsGridCtlr.filter(this.getValue());
-        }
-      }
-    },
-    {
-      view: "button",
-      width: 100,
-      label: "Save",
-      click: "vtrInsertsToolbarCtlr.save();"
-    },
-    {}
-  ]
-};
+/******************************************************************************/
 
-/*=====================================================================
-Voter Inserts Toolbar Controller
-=====================================================================*/
-var vtrInsertsToolbarCtlr = {
-  toolbar: null,
-  csvFile: null,
-
-  init: function() {
-    this.toolbar = $$("vtrInsertsToolbar");
-  },
-
-  save: function() {
-    var data = vtrInsertsGridCtlr.getData();
-    if (data === undefined) return;
-
-    //noinspection JSUnresolvedVariable,JSUnresolvedFunction
-    var url = Flask.url_for("vtr.add_many");
-
-    ajaxDao.post(url, data, function() {
-      webix.message("Records saved!");
-    })
-  }
-
-};
-
-/*=====================================================================
-Voter Inserts Panel
-=====================================================================*/
 var vtrInsertsPanel = {
   rows: [vtrInsertsToolbar, vtrInsertsGrid]
 };
 
-/*=====================================================================
-Voter Inserts Panel Controller
-=====================================================================*/
 var vtrInsertsPanelCtlr = {
   init: function() {
     vtrInsertsToolbarCtlr.init();

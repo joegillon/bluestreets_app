@@ -2,9 +2,63 @@
  * Created by Joe on 6/15/2017.
  */
 
-/*=====================================================================
-Voter Conflicts Grid
-=====================================================================*/
+/*==================================================
+Voter Conflicts Panel
+==================================================*/
+var vtrConflictsToolbar = {
+  view: "toolbar",
+  id: "vtrConflictsToolbar",
+  height: 35,
+  paddingY: 2,
+  cols: [
+    {
+      view: "label",
+      label: "Conflicting Voter Records"
+    },
+    {
+      view: "search",
+      id: "vtrConflictsFilter",
+      placeholder: "Search...",
+      width: 150,
+      on: {
+        onTimedKeyPress: function() {
+          vtrConflictsGridCtlr.filter(this.getValue());
+        }
+      }
+    },
+    {
+      view: "button",
+      width: 100,
+      label: "Save",
+      click: "vtrConflictsToolbarCtlr.save();"
+    },
+    {}
+  ]
+};
+
+var vtrConflictsToolbarCtlr = {
+  toolbar: null,
+  csvFile: null,
+
+  init: function() {
+    this.toolbar = $$("vtrConflictsToolbar");
+  },
+
+  save: function() {
+    var data = vtrConflictsGridCtlr.getData();
+    if (data === undefined) return;
+
+    //noinspection JSUnresolvedVariable,JSUnresolvedFunction
+    var url = Flask.url_for("vtr.update_many");
+
+    ajaxDao.post(url, data, function() {
+      webix.message("Records saved!");
+    })
+  }
+};
+
+/******************************************************************************/
+
 var vtrConflictsGrid = {
   view: "datatable",
   id: "vtrConflictsGrid",
@@ -43,9 +97,6 @@ var vtrConflictsGrid = {
   }
 };
 
-/*=====================================================================
-Voter Conflicts Grid Controller
-=====================================================================*/
 var vtrConflictsGridCtlr = {
   grid: null,
   saves: [],
@@ -97,75 +148,12 @@ var vtrConflictsGridCtlr = {
   }
 };
 
-/*=====================================================================
-Voter Conflicts Toolbar
-=====================================================================*/
-var vtrConflictsToolbar = {
-  view: "toolbar",
-  id: "vtrConflictsToolbar",
-  height: 35,
-  paddingY: 2,
-  cols: [
-    {
-      view: "label",
-      label: "Conflicting Voter Records"
-    },
-    {
-      view: "search",
-      id: "vtrConflictsFilter",
-      placeholder: "Search...",
-      width: 150,
-      on: {
-        onTimedKeyPress: function() {
-          vtrConflictsGridCtlr.filter(this.getValue());
-        }
-      }
-    },
-    {
-      view: "button",
-      width: 100,
-      label: "Save",
-      click: "vtrConflictsToolbarCtlr.save();"
-    },
-    {}
-  ]
-};
+/******************************************************************************/
 
-/*=====================================================================
-Voter Conflicts Toolbar Controller
-=====================================================================*/
-var vtrConflictsToolbarCtlr = {
-  toolbar: null,
-  csvFile: null,
-
-  init: function() {
-    this.toolbar = $$("vtrConflictsToolbar");
-  },
-
-  save: function() {
-    var data = vtrConflictsGridCtlr.getData();
-    if (data === undefined) return;
-
-    //noinspection JSUnresolvedVariable,JSUnresolvedFunction
-    var url = Flask.url_for("vtr.update_many");
-
-    ajaxDao.post(url, data, function() {
-      webix.message("Records saved!");
-    })
-  }
-
-};
-
-/*=====================================================================
-Voter Conflicts Panel
-=====================================================================*/
 var vtrConflictsPanel = {
   rows: [vtrConflictsToolbar, vtrConflictsGrid]
 };
 
-/*=====================================================================
-Voter Conflicts Panel Controller
-=====================================================================*/
 var vtrConflictsPanelCtlr = {
   init: function() {
     vtrConflictsToolbarCtlr.init();
