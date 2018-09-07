@@ -17,6 +17,7 @@ var nbhListToolbar = {
     },
     {
       view: "button",
+      id: "nbhAllBtn",
       label: "All",
       width: 100,
       click: function() {
@@ -25,47 +26,54 @@ var nbhListToolbar = {
     },
     {
       view: "button",
-      label: "Import",
-      width: 100,
-      click: function() {
-        vtrApiImportPanelCtlr.execute();
-      }
+      id: "nbhButton",
+      label: "Submit",
+      width: 100
     }
   ]
 };
 
 var nbhListToolbarCtlr = {
   toolbar: null,
+  lbl: "",
 
-  init: function() {
+  setAllButton: function(on_off) {
+    if (on_off)
+      $$("nbhAllBtn").show();
+    else
+      $$("nbhAllBtn").hide();
+  },
+
+  init: function(fMulti) {
     this.toolbar = $$("nbhListToolbar");
+    this.setAllButton(fMulti);
   }
 };
+
+/**********************************************************************/
 
 var nbhList = {
   view: "list",
   id: "nbhList",
   template: "#name#",
-  select: true,
-  multiselect: true
-  //data: neighborhoods
+  select: true
 };
 
 var nbhListCtlr = {
   list: null,
 
-  init: function() {
+  setMulti: function(fVal) {
+    this.list.define('multiselect', fVal);
+  },
+
+  init: function(fMulti) {
     this.list = $$("nbhList");
+    this.setMulti(fMulti);
+    this.list.parse(neighborhoods);
   },
 
   clear: function() {
     this.list.clearAll();
-  },
-
-  load: function(data) {
-    this.clear();
-    this.list.parse(data);
-    this.list.select(data[0].id);
   },
 
   selectAll: function() {
@@ -78,15 +86,34 @@ var nbhListCtlr = {
 
 };
 
+/**********************************************************************/
+
 var nbhListPanel = {
+  id: "nbhListPanel",
   width: 300,
   rows: [nbhListToolbar, nbhList]
 };
 
 var nbhListPanelCtlr = {
-  init: function() {
-    nbhListToolbarCtlr.init();
-    nbhListCtlr.init();
+  panel: null,
+
+  init: function(fMulti) {
+    this.panel = $$("nbhListPanel");
+
+    nbhListToolbarCtlr.init(fMulti);
+    nbhListCtlr.init(fMulti);
+  },
+
+  getSelections: function() {
+    return nbhListCtlr.selection(true);
+  },
+
+  hide: function() {
+    this.panel.hide();
+  },
+
+  show: function() {
+    this.panel.show();
   }
 };
 

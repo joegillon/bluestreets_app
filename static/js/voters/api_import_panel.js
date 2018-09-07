@@ -2,9 +2,9 @@
  * Created by Joe on 7/18/2018.
  */
 
-/*==================================================
+/*======================================================================
 Voter API Import Panel
-==================================================*/
+======================================================================*/
 var insertsView = {
   id: "insertsView",
   rows: [vtrInsertsPanel],
@@ -27,7 +27,7 @@ var vtrApiImportTabPanel = {
   rows: [
     {
       view: "segmented",
-      id: "vtrApiImportTabBar",
+      id: "vtrApiImportTabPanel",
       value: "insertsView",
       multiview: true,
       optionWidth: 80,
@@ -47,7 +47,7 @@ var vtrApiImportTabPanel = {
   ]
 };
 
-/******************************************************************************/
+/**********************************************************************/
 
 var vtrApiImportPanel = {
   id: "vtrApiImportPanel",
@@ -57,41 +57,30 @@ var vtrApiImportPanel = {
 };
 
 var vtrApiImportPanelCtlr = {
-  panel: null,
-
   init: function() {
-    this.panel = $$("vtrApiImportPanel");
-
-    nbhListPanelCtlr.init();
+    var myPanel = $$("vtrApiImportPanel");
+    nbhListPanelCtlr.init(false);
     vtrInsertsPanelCtlr.init();
     vtrConflictsPanelCtlr.init();
     vtrDeletesPanelCtlr.init();
 
-    nbhListCtlr.load(neighborhoods);
-
-    webix.extend(this.panel, webix.ProgressBar);
-    //$$("filterSubmitBtn").attachEvent("onItemClick", this.execute);
-    //$$("allBtn").show();
+    webix.extend(myPanel, webix.ProgressBar);
+    $$("nbhButton").attachEvent("onItemClick", this.execute);
   },
 
   execute: function() {
-    var thisPanel = this.panel;
+    var myPanel = $$("vtrApiImportPanel");
 
-    var nbhs = nbhListCtlr.selection();
-    var params = [];
-    for (var i = 0; i < nbhs.length; i++) {
-      params.push({id: nbhs[i].id, type: nbhs[i].type});
-    }
-
-    thisPanel.disable();
-    thisPanel.showProgress({
+    var nbh = nbhListCtlr.selection();
+    myPanel.disable();
+    myPanel.showProgress({
       delay: 1000,
       hide: false
     });
 
     //noinspection JSUnresolvedVariable,JSUnresolvedFunction
     var url = Flask.url_for("vtr.api_import");
-    ajaxDao.post(url, params, function (response) {
+    ajaxDao.post(url, nbh, function (response) {
       webix.delay(function () {
         if (response.error) {
           webix.message({type: "error", text: response.error})
@@ -99,11 +88,11 @@ var vtrApiImportPanelCtlr = {
           vtrInsertsGridCtlr.load(response["inserts"]);
           vtrConflictsGridCtlr.load(response["conflicts"]);
           vtrDeletesGridCtlr.load(response["deletes"]);
-          $$("vtrApiImportTabBar").setValue("insertsView");
-          thisPanel.hideProgress();
-          thisPanel.enable();
+          $$("vtrApiImportTabPanel").setValue("insertsView");
+          myPanel.hideProgress();
+          myPanel.enable();
         }
-      }, thisPanel, null, 1000);
+      }, myPanel, null, 1000);
     });
   }
 };

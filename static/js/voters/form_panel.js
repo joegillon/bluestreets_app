@@ -2,9 +2,44 @@
  * Created by Joe on 8/7/2017.
  */
 
-/*=====================================================================
-Voter Form
-=====================================================================*/
+/*==================================================
+Voter Form Panel
+==================================================*/
+var voterFormToolbar = {
+  view: "toolbar",
+  id: "voterFormToolbar",
+  height: 35,
+  elements: [
+    {view: "label", label: "Voter Lookup"},
+    {
+      view: "button",
+      label: "Clear",
+      width: 100,
+      click: function() {
+        voterFormToolbarCtlr.clear();
+      }
+    },
+    {
+      view: "button",
+      label: "Submit",
+      width: 100,
+      click: function () {
+        voterFormCtlr.submit();
+      }
+    }
+  ]
+};
+
+var voterFormToolbarCtlr = {
+  init: function() {},
+
+  clear: function() {
+    voterFormCtlr.clear();
+  }
+};
+
+/******************************************************************************/
+
 var voterForm = {
   view: "form",
   id: "voterForm",
@@ -17,9 +52,6 @@ var voterForm = {
   ]
 };
 
-/*=====================================================================
-Voter Form Controller
-=====================================================================*/
 var voterFormCtlr = {
   form: null,
 
@@ -64,48 +96,8 @@ var voterFormCtlr = {
   }
 };
 
-/*=====================================================================
-Voter Form Toolbar
-=====================================================================*/
-var voterFormToolbar = {
-  view: "toolbar",
-  id: "voterFormToolbar",
-  height: 35,
-  elements: [
-    {view: "label", label: "Voter Lookup"},
-    {
-      view: "button",
-      label: "Clear",
-      width: 100,
-      click: function() {
-        voterFormToolbarCtlr.clear();
-      }
-    },
-    {
-      view: "button",
-      label: "Submit",
-      width: 100,
-      click: function () {
-        voterFormCtlr.submit();
-      }
-    }
-  ]
-};
+/******************************************************************************/
 
-/*=====================================================================
-Voter Form Toolbar Controller
-=====================================================================*/
-var voterFormToolbarCtlr = {
-  init: function() {},
-
-  clear: function() {
-    voterFormCtlr.clear();
-  }
-};
-
-/*=====================================================================
-Voter Form Panel
-=====================================================================*/
 var voterFormPanel = {
   rows: [voterFormToolbar, voterForm]
 };

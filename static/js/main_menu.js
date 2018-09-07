@@ -19,7 +19,7 @@ var menu_data = [
     icon: "users",
     value: "Voters",
     submenu: [
-      {id: "vtr_import_api", value: "Import from API"},
+      {id: "vtr_import_api", value: "Import from County"},
       {id: "vtr_import_csv", value: "Import Spreadsheet"},
       {id: "vtr_worksheet", value: "Worksheet"},
       {id: "vtr_sync", value: "Synchronize"}
@@ -87,6 +87,11 @@ var mainMenu = {
       if (id == "vtr_import_csv") {
         //noinspection JSUnresolvedVariable,JSUnresolvedFunction
         window.location.href = Flask.url_for('vtr.csv_import');
+        return;
+      }
+      if (id == "vtr_worksheet") {
+        //noinspection JSUnresolvedVariable,JSUnresolvedFunction
+        window.location.href = Flask.url_for('vtr.worksheet');
         return;
       }
       if (id == "con_grid") {

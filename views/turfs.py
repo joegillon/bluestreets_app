@@ -42,6 +42,7 @@ def neighborhoods():
     if params['blocks']:
         block_vals = [(
             block['street_name'],
+            block['street_type'],
             block['low_addr'],
             block['high_addr'],
             block['odd_even'],

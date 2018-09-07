@@ -27,21 +27,23 @@ def api_import():
             data_path=app.config['DATA_PATH']
         )
 
-    nbhs = json.loads(request.form['params'])
+    nbh = json.loads(request.form['params'])
     pcts = []
     blocks = []
-    for n in nbhs:
-        if n['type'] == 8:
-            blocks += turf_dao.get_blocks(n['id'])
-        else:
-            pcts = turf_dao.get_neighborhood_precincts(n['id'])
+    if nbh['type'] == 8:
+        blocks += turf_dao.get_blocks(nbh['id'])
+    else:
+        pcts = turf_dao.get_neighborhood_precincts(nbh['id'])
     voters = []
     for pct in pcts:
         voters += api_client.get('vtr_api/pct/%s' % (pct['precinct_id'],))
     if blocks:
         voters += api_client.post('vtr_api/blocks', {'blocks': json.dumps(blocks)})
 
-    inserts, conflicts, deletes = filter_api_imports(voters, [n['id'] for n in nbhs])
+    for voter in voters:
+        voter['neighborhood_id'] = nbh['id']
+
+    inserts, conflicts, deletes = filter_api_imports(voters, nbh['id'])
     return jsonify(
         inserts=inserts,
         conflicts=conflicts,
@@ -69,10 +71,21 @@ def csv_import():
 @vtr.route('/worksheet', methods=['GET', 'POST'])
 def worksheet():
     if request.method == 'GET':
+        dao = Dao()
+        neighborhoods = turf_dao.get_neighborhoods(dao)
         return render_template(
             'voters/worksheet.html',
-            title='Voter Worksheet'
+            title='Voter Worksheet',
+            neighborhoods=neighborhoods
         )
+
+
+@vtr.route('/nbhvoters/<nbh_ids>', methods=['GET'])
+def nbhvoters(nbh_ids):
+    nbh_ids = nbh_ids.split(',')
+    dao = Dao()
+    data = vtr_dao.get_for_neighborhoods(dao, nbh_ids)
+    return jsonify(voters=data)
 
 
 @vtr.route('/sync', methods=['GET'])
@@ -130,9 +143,9 @@ def drop_many():
         return jsonify(error=str(ex))
 
 
-def filter_api_imports(api_voters, nbh_ids):
+def filter_api_imports(api_voters, nbh_id):
     dao = Dao()
-    my_voters = vtr_dao.get_for_neighborhoods(dao, nbh_ids)
+    my_voters = vtr_dao.get_for_neighborhood(dao, nbh_id)
     my_voters = {v['voter_id']: v for v in my_voters}
     api_voters = {v['voter_id']: v for v in api_voters}
     inserts = []

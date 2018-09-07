@@ -2,9 +2,24 @@
  * Created by Joe on 8/7/2017.
  */
 
-/*=====================================================================
-Voter Columns
-=====================================================================*/
+/*==================================================
+Voter Match Panel
+==================================================*/
+var voterMatchToolbar = {
+  view: "toolbar",
+  id: "voterMatchToolbar",
+  height: 35,
+  cols: [
+    {view: "label", label: "Voter Matches"}
+  ]
+};
+
+var voterMatchToolbarCtlr = {
+  init: function() {}
+};
+
+/******************************************************************************/
+
 var voterColumns = [
   {
     id: "name",
@@ -42,9 +57,6 @@ var voterColumns = [
   }
 ];
 
-/*=====================================================================
-Voter Match Grid
-=====================================================================*/
 var voterMatchGrid = {
   view: "datatable",
   id: "voterMatchGrid",
@@ -59,9 +71,6 @@ var voterMatchGrid = {
   }
 };
 
-/*=====================================================================
-Voter Match Grid Controller
-=====================================================================*/
 var voterMatchGridCtlr = {
   grid: null,
 
@@ -89,35 +98,12 @@ var voterMatchGridCtlr = {
   }
 };
 
-/*=====================================================================
-Voter Match Toolbar
-=====================================================================*/
-var voterMatchToolbar = {
-  view: "toolbar",
-  id: "voterMatchToolbar",
-  height: 35,
-  cols: [
-    {view: "label", label: "Voter Matches"}
-  ]
-};
+/******************************************************************************/
 
-/*=====================================================================
-Voter Match Toolbar Controller
-=====================================================================*/
-var voterMatchToolbarCtlr = {
-  init: function() {}
-};
-
-/*=====================================================================
-Voter Match Panel
-=====================================================================*/
 var voterMatchPanel = {
   rows: [voterMatchToolbar, voterMatchGrid]
 };
 
-/*=====================================================================
-Voter Match Panel Controller
-=====================================================================*/
 var voterMatchPanelCtlr = {
   init: function() {
     voterMatchToolbarCtlr.init();

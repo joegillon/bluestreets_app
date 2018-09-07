@@ -2,46 +2,168 @@
  * Created by Joe on 6/15/2017.
  */
 
-/*=====================================================================
-Voter Grid Headers
-=====================================================================*/
+/*==================================================
+Voter Grid Panel
+==================================================*/
+var voterGridToolbar = {
+  view: "toolbar",
+  id: "voterGridToolbar",
+  height: 35,
+  cols: [
+    {
+      view: "button",
+      type: "icon",
+      icon: "backward",
+      width: 25,
+      tooltip: "Neighborhoods",
+      click: "nbhListPanelCtlr.show()"
+    },
+    {
+      view: "search",
+      id: "voterGridFilter",
+      placeholder: "Search...",
+      width: 100,
+      on: {
+        onTimedKeyPress: function() {
+          voterGridCtlr.filter(this.getValue());
+        }
+      }
+    },
+    {
+      view: "template",
+      template: '<input id="fileUpload" name="files[]" type="file">',
+      width: 200
+    },
+    {
+      view: "button",
+      type: "icon",
+      icon: "database",
+      width: 25,
+      tooltip: "Save to DB",
+      click: "voterGridCtlr.save()"
+    },
+    {
+      view: "button",
+      type: "icon",
+      icon: "floppy-o",
+      width: 25,
+      tooltip: "Save CSV",
+      click: "voterGridCtlr.save()"
+    },
+    {
+      view: "button",
+      type: "icon",
+      icon: "filter",
+      tooltip: "Show selected rows",
+      width: 25,
+      click: "voterGridCtlr.rowView('')"
+    },
+    {
+      view: "button",
+      type: "icon",
+      icon: "list-alt",
+      tooltip: "Show all rows",
+      width: 25,
+      click: "voterGridCtlr.rowView('all')"
+    },
+    {
+      view: "button",
+      type: "icon",
+      icon: "refresh",
+      tooltip: "Clear selections",
+      width: 25,
+      click: "voterGridCtlr.clearSelections()"
+    },
+    {
+      view: "button",
+      type: "icon",
+      icon: "columns",
+      tooltip: "Choose columns",
+      width: 25,
+      click: "voterGridCtlr.chooseCols()"
+    },
+    {
+      view: "button",
+      type: "icon",
+      icon: "user-plus",
+      tooltip: "Add voter",
+      width: 25,
+      click: "voterGridCtlr.addVoter()"
+    },
+    {
+      view: "button",
+      type: "icon",
+      icon: "user-times",
+      tooltip: "Drop voter",
+      width: 25,
+      click: "voterGridCtlr.dropVoter()"
+    },
+    {
+      view: "button",
+      type: "icon",
+      icon: "table",
+      tooltip: "New column",
+      width: 25,
+      click: "voterGridCtlr.newColumn()"
+    }
+  ]
+};
+
+/******************************************************************************/
+
+var voterGridToolbarCtlr = {
+  toolbar: null,
+
+  init: function() {
+    this.toolbar = $$("voterGridToolbar");
+    //document.getElementById("fileUpload").addEventListener(
+    //    "change", this.voterFileSelect, false);
+  },
+
+  voterFileSelect: function(e) {
+    var reader = new FileReader();
+    reader.readAsText(e.target.files[0]);
+    reader.onload = (function(theFile) {
+      voterGridCtlr.open(theFile.target.result);
+    });
+  }
+};
+
+/******************************************************************************/
+
 var voterGridHeaders = [
   "Name", "Address", "Gender", "Birth Year", "Party", "Perm Abs",
-  "Status", "UOCAVA", "Reg Date", "Voter ID"
+  "Status", "UOCAVA", "Reg Date"
 ];
 
-/*=====================================================================
-Voter Grid Columns
-=====================================================================*/
 var voterColumns = {
   Name: {id: "name", header: "Name", adjust: true, sort: "string"},
   Address: {id: "address", header: "Address", adjust: true, sort: sortAddress},
-  Gender: {id: "gender", header: "Gender", adjust: true},
+  Gender: {id: "gender", header: "Gender", adjust: true, sort: "text"},
   "Birth Year": {id: "birth_year", header: "Birth Year", adjust: true, sort: "int"},
   Party: {id: "party", header: "Party", adjust: true},
   "Perm Abs": {id: "permanent_absentee", header: "Perm Abs", adjust: true},
-  Status: {id: "status", header: "Status", adjust: true},
+  Status: {id: "status", header: "Status", adjust: true, sort: "text"},
   UOCAVA: {id: "uocava", header: "UOCAVA", adjust: true},
-  "Reg Date": {id: "reg_date", header: "Reg Date", adjust: true},
-  "Voter ID": {id: "voter_id", header: "Voter ID", adjust: true}
+  "Reg Date": {id: "reg_date", header: "Reg Date", adjust: true}
 };
 
-/*=====================================================================
-Voter Grid
-=====================================================================*/
 var voterGrid = {
   view: "datatable",
   id: "voterGrid",
   columns: Object.values(voterColumns),
   select: "row",
   multiselect: true,
-  minHeight: 400,
-  autowidth: true
+  autowidth: true,
+  resizeColumn: true,
+  scheme: {
+    $change: function(obj) {
+      obj.name = wholeName(obj);
+      obj.address = wholeAddress(obj);
+    }
+  }
 };
 
-/*=====================================================================
-Voter Grid Controller
-=====================================================================*/
 var voterGridCtlr = {
   grid: null,
   elections: null,
@@ -238,129 +360,8 @@ var voterGridCtlr = {
   }
 };
 
-/*=====================================================================
-Voter Grid Toolbar
-=====================================================================*/
-var voterGridToolbar = {
-  view: "toolbar",
-  id: "voterGridToolbar",
-  height: 35,
-  cols: [
-    {
-      view: "search",
-      id: "voterGridFilter",
-      placeholder: "Search...",
-      width: 100,
-      on: {
-        onTimedKeyPress: function() {
-          voterGridCtlr.filter(this.getValue());
-        }
-      }
-    },
-    {
-      view: "template",
-      template: '<input id="fileUpload" name="files[]" type="file">',
-      width: 200
-    },
-    {
-      view: "button",
-      type: "icon",
-      icon: "database",
-      width: 25,
-      tooltip: "Save to DB",
-      click: "voterGridCtlr.save()"
-    },
-    {
-      view: "button",
-      type: "icon",
-      icon: "floppy-o",
-      width: 25,
-      tooltip: "Save CSV",
-      click: "voterGridCtlr.save()"
-    },
-    {
-      view: "button",
-      type: "icon",
-      icon: "filter",
-      tooltip: "Show selected rows",
-      width: 25,
-      click: "voterGridCtlr.rowView('')"
-    },
-    {
-      view: "button",
-      type: "icon",
-      icon: "list-alt",
-      tooltip: "Show all rows",
-      width: 25,
-      click: "voterGridCtlr.rowView('all')"
-    },
-    {
-      view: "button",
-      type: "icon",
-      icon: "refresh",
-      tooltip: "Clear selections",
-      width: 25,
-      click: "voterGridCtlr.clearSelections()"
-    },
-    {
-      view: "button",
-      type: "icon",
-      icon: "columns",
-      tooltip: "Choose columns",
-      width: 25,
-      click: "voterGridCtlr.chooseCols()"
-    },
-    {
-      view: "button",
-      type: "icon",
-      icon: "user-plus",
-      tooltip: "Add voter",
-      width: 25,
-      click: "voterGridCtlr.addVoter()"
-    },
-    {
-      view: "button",
-      type: "icon",
-      icon: "user-times",
-      tooltip: "Drop voter",
-      width: 25,
-      click: "voterGridCtlr.dropVoter()"
-    },
-    {
-      view: "button",
-      type: "icon",
-      icon: "table",
-      tooltip: "New column",
-      width: 25,
-      click: "voterGridCtlr.newColumn()"
-    }
-  ]
-};
+/******************************************************************************/
 
-/*=====================================================================
-Voter Grid Toolbar Controller
-=====================================================================*/
-var voterGridToolbarCtlr = {
-  toolbar: null,
-
-  init: function() {
-    this.toolbar = $$("voterGridToolbar");
-    document.getElementById("fileUpload").addEventListener(
-        "change", this.voterFileSelect, false);
-  },
-
-  voterFileSelect: function(e) {
-    var reader = new FileReader();
-    reader.readAsText(e.target.files[0]);
-    reader.onload = (function(theFile) {
-      voterGridCtlr.open(theFile.target.result);
-    });
-  }
-};
-
-/*=====================================================================
-Voter Grid Panel
-=====================================================================*/
 var voterGridPanel = {
   rows: [
     {
@@ -371,12 +372,13 @@ var voterGridPanel = {
   ]
 };
 
-/*=====================================================================
-Voter Grid Panel Controller
-=====================================================================*/
 var voterGridPanelCtlr = {
   init: function() {
     voterGridToolbarCtlr.init();
     voterGridCtlr.init();
+  },
+
+  load: function(data) {
+    voterGridCtlr.load(data);
   }
 };
