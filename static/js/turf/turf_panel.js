@@ -7,7 +7,6 @@ Turf Panel
 =====================================================================*/
 var turfPanel = {
   cols: [
-    //precinctPanel,
     streetPanel,
     blockPanel
   ]
@@ -23,19 +22,8 @@ var turfPanelCtlr = {
   init: function() {
     this.panel = $$("turfPanel");
 
-    //precinctPanelCtlr.init();
     streetPanelCtlr.init();
     blockPanelCtlr.init();
-
-    //$$("precinctList").attachEvent("onSelectChange", function() {
-    //  turfPanelCtlr.pct = $$("precinctList").getSelectedItem();
-    //  streetListCtlr.clear();
-    //  blockListCtlr.clear();
-    //  streetListCtlr.load(
-    //    turfPanelCtlr.pct["jurisdiction_code"],
-    //    turfPanelCtlr.pct["ward"],
-    //    turfPanelCtlr.pct["precinct"]);
-    //});
 
   },
 

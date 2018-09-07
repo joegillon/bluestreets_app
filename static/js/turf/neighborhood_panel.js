@@ -25,6 +25,8 @@ var nbhTypeToolbarCtlr = {
   }
 };
 
+/*********************************************************************/
+
 var nbhTypeList = {
   view: "list",
   id: "nbhTypeList",
@@ -45,6 +47,8 @@ var nbhTypeListCtlr = {
     this.list = $$("nbhTypeList");
   }
 };
+
+/*********************************************************************/
 
 var nbhTypePanel = {
   width: 200,
@@ -74,7 +78,7 @@ var nbhDetailToolbar = {
     {
       view: "text",
       id: "nbhNameBox",
-      placeholder: 'Neighborhood Name',
+      placeholder: 'Turf Name',
       width: 200,
       on: {
         onChange: function(newv) {
@@ -113,6 +117,8 @@ var nbhDetailToolbarCtlr = {
   }
 };
 
+/*********************************************************************/
+
 var nbhDetailList = {
   view: "list",
   id: "nbhDetailList",
@@ -143,6 +149,8 @@ var nbhDetailListCtlr = {
   }
 
 };
+
+/*********************************************************************/
 
 var nbhDetailPanel = {
   rows: [nbhDetailToolbar, nbhDetailList]
@@ -186,6 +194,8 @@ var nbhEditListToolbarCtlr = {
     this.toolbar = $$("nbhEditListToolbar");
   }
 };
+
+/*********************************************************************/
 
 var nbhEditList = {
   view: "editlist",
@@ -252,6 +262,8 @@ var nbhEditListCtlr = {
   }
 };
 
+/*********************************************************************/
+
 var nbhEditListPanel = {
   width: 200,
   rows: [nbhEditListToolbar, nbhEditList]
@@ -272,9 +284,6 @@ var nbhPanel = {
   cols: [nbhTypePanel, nbhDetailPanel, nbhEditListPanel]
 };
 
-/*=====================================================================
-Neighborhood Panel Controller
-=====================================================================*/
 var nbhPanelCtlr = {
   selectedType: null,
   nbhName: "",
@@ -347,7 +356,7 @@ var nbhPanelCtlr = {
         vars = item.id.split(",");
         pcts = pct_db({
           jurisdiction_name: vars[0],
-          ward: vars[1].trim()
+          ward: vars[1]
         }).get();
         break;
       case 4:
@@ -359,15 +368,15 @@ var nbhPanelCtlr = {
         }).get();
         break;
       case 5:
-        nbhName = this.selectedType.name + " " + nbhName;
+        this.nbhName = this.selectedType.name + " " + this.nbhName;
         pcts = pct_db({state_house: item.id}).get();
         break;
       case 6:
-        nbhName = this.selectedType.name + " " + nbhName;
+        this.nbhName = this.selectedType.name + " " + this.nbhName;
         pcts = pct_db({state_senate: item.id}).get();
         break;
       case 7:
-        nbhName = this.selectedType.name + " " + nbhName;
+        this.nbhName = this.selectedType.name + " " + this.nbhName;
         pcts = pct_db({congress: item.id}).get();
         break;
       case 8:

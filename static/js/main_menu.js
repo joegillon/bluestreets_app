@@ -12,7 +12,7 @@ var menu_data = [
   {
     id: "neighborhoods",
     icon: "map",
-    value: "My Neighborhoods"
+    value: "My Turf"
   },
   {
     id: "voter_lists",
