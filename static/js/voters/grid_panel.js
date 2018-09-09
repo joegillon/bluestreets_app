@@ -29,19 +29,19 @@ var voterGridToolbar = {
         }
       }
     },
-    {
-      view: "template",
-      template: '<input id="fileUpload" name="files[]" type="file">',
-      width: 200
-    },
-    {
-      view: "button",
-      type: "icon",
-      icon: "database",
-      width: 25,
-      tooltip: "Save to DB",
-      click: "voterGridCtlr.save()"
-    },
+    //{
+    //  view: "template",
+    //  template: '<input id="fileUpload" name="files[]" type="file">',
+    //  width: 200
+    //},
+    //{
+    //  view: "button",
+    //  type: "icon",
+    //  icon: "database",
+    //  width: 25,
+    //  tooltip: "Save to DB",
+    //  click: "voterGridCtlr.save()"
+    //},
     {
       view: "button",
       type: "icon",
@@ -56,7 +56,9 @@ var voterGridToolbar = {
       icon: "filter",
       tooltip: "Show selected rows",
       width: 25,
-      click: "voterGridCtlr.rowView('')"
+      click: function() {
+        voterGridCtlr.rowView("");
+      }
     },
     {
       view: "button",
@@ -64,7 +66,9 @@ var voterGridToolbar = {
       icon: "list-alt",
       tooltip: "Show all rows",
       width: 25,
-      click: "voterGridCtlr.rowView('all')"
+      click: function() {
+        voterGridCtlr.rowView("all");
+      }
     },
     {
       view: "button",
@@ -72,7 +76,9 @@ var voterGridToolbar = {
       icon: "refresh",
       tooltip: "Clear selections",
       width: 25,
-      click: "voterGridCtlr.clearSelections()"
+      click: function() {
+        voterGridCtlr.clearSelections();
+      }
     },
     {
       view: "button",
@@ -80,7 +86,9 @@ var voterGridToolbar = {
       icon: "columns",
       tooltip: "Choose columns",
       width: 25,
-      click: "voterGridCtlr.chooseCols()"
+      click: function() {
+        voterGridCtlr.chooseCols();
+      }
     },
     {
       view: "button",
@@ -88,7 +96,9 @@ var voterGridToolbar = {
       icon: "user-plus",
       tooltip: "Add voter",
       width: 25,
-      click: "voterGridCtlr.addVoter()"
+      click: function() {
+        voterGridCtlr.addVoter();
+      }
     },
     {
       view: "button",
@@ -96,7 +106,9 @@ var voterGridToolbar = {
       icon: "user-times",
       tooltip: "Drop voter",
       width: 25,
-      click: "voterGridCtlr.dropVoter()"
+      click: function() {
+        voterGridCtlr.dropVoter();
+      }
     },
     {
       view: "button",
@@ -104,7 +116,9 @@ var voterGridToolbar = {
       icon: "table",
       tooltip: "New column",
       width: 25,
-      click: "voterGridCtlr.newColumn()"
+      click: function() {
+        voterGridCtlr.newColumn();
+      }
     }
   ]
 };

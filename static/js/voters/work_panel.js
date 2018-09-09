@@ -74,7 +74,8 @@ var vtrWorkPanelCtlr = {
     //noinspection JSUnresolvedVariable,JSUnresolvedFunction
     var url = Flask.url_for("vtr.nbhvoters", {nbh_ids: ids.join(',')});
     ajaxDao.get(url, function (response) {
-      voterGridPanelCtlr.load(response['voters']);
+      voterGridCtlr.all_voters = response["voters"];
+      voterGridPanelCtlr.load(voterGridCtlr.all_voters);
       nbhListPanelCtlr.hide();
     });
   }
