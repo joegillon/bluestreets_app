@@ -170,3 +170,37 @@ def has_diff(api_voter, my_voter):
             return True
     return False
 
+
+@vtr.route('/history', methods=['GET'])
+def history():
+    return render_template(
+        'voters/history',
+        title='Voter History'
+    )
+
+
+@vtr.route('/elections', methods=['GET', 'POST'])
+def elections():
+    import dao.election_dao as el_dao
+
+    if request.method == 'GET':
+        dao = Dao()
+        elects = el_dao.get(dao)
+
+        return render_template(
+            'voters/elections.html',
+            title='Elections',
+            elections=elects
+        )
+
+    dao = Dao(stateful=True)
+    latest = el_dao.get_latest_date(dao)
+    data = api_client.get('vtr_api/elections_after/%s' % (latest,))
+    if data:
+        el_dao.add(dao, data)
+        elects = el_dao.get(dao)
+        result = jsonify(elections=elects)
+    else:
+        result = jsonify(msg='No new elections')
+    dao.close()
+    return result

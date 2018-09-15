@@ -26,6 +26,15 @@ var menu_data = [
     ]
   },
   {
+    id: "voter_hx",
+    icon: "",
+    value: "History",
+    submenu: [
+      {id: "hx_update", value: "Update Voter History"},
+      {id: "hx_elections", value: "Update Elections"}
+    ]
+  },
+  {
     id: "con_lists",
     icon: "address-card-o",
     value: "Contacts",
@@ -92,6 +101,16 @@ var mainMenu = {
       if (id == "vtr_worksheet") {
         //noinspection JSUnresolvedVariable,JSUnresolvedFunction
         window.location.href = Flask.url_for('vtr.worksheet');
+        return;
+      }
+      if (id == "hx_update") {
+        //noinspection JSUnresolvedVariable,JSUnresolvedFunction
+        window.location.href = Flask.url_for('vtr.history');
+        return;
+      }
+      if (id == "hx_elections") {
+        //noinspection JSUnresolvedVariable,JSUnresolvedFunction
+        window.location.href = Flask.url_for('vtr.elections');
         return;
       }
       if (id == "con_grid") {
